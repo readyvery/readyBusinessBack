@@ -1,1 +1,13 @@
 #추후에 메인서버 배포시에는 작성 예정
+name: Main Server Merge
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test #임시
+        run: |
+          echo "test"
