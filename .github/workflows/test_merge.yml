@@ -26,6 +26,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build
 
+      - name: remove plain.jar
+        run: rm -rf build/libs/plain.jar
+
       - name: file copy
         uses: actions/upload-artifact@v3
         with:
@@ -48,7 +51,7 @@ jobs:
           BUCKET_NAME: ${{ secrets.CF_BUCKET_NAME }}
           ENDPOINT_URL: ${{ secrets.CF_ENDPOINT_URL }}
         run: |
-          aws s3 sync build/libs/*SNAPSHOT.jar s3://$BUCKET_NAME/java/test_main.jar \
+          aws s3 sync build/libs/ s3://$BUCKET_NAME/java/main/test \
             --endpoint-url $ENDPOINT_URL --delete --exact-timestamps
 
       - name: SSH and deploy
@@ -60,7 +63,7 @@ jobs:
           port: ${{ secrets.PORT }}
           timeout: 40s  # 30초 기본
           script: |
-            aws s3 sync s3://readyvery-dev-server/java/test_main.jar ./docker/java/test/test_main.jar \
+            aws s3 sync s3://readyvery-dev-server/java/main/test ./docker/java/test/jar \
             --endpoint-url https://29c6e4b55b1ddb8d2b6e69df21141caa.r2.cloudflarestorage.com \
             --delete --exact-timestamps
             
