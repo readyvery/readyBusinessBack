@@ -52,11 +52,11 @@ public class UserInfo extends BaseTimeEntity {
 	private String age;
 
 	// 생일
-	@Column(nullable = false)
+	@Column
 	private String birth;
 
 	// 전화번호
-	@Column(nullable = false)
+	@Column
 	private String phone;
 
 	// 유저 권한
