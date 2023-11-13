@@ -26,21 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtService {
 
-	@Value("${jwt.secretKey}")
-	private String secretKey;
-
-	@Value("${jwt.access.expiration}")
-	private Long accessTokenExpirationPeriod;
-
-	@Value("${jwt.refresh.expiration}")
-	private Long refreshTokenExpirationPeriod;
-
-	@Value("${jwt.access.cookie}")
-	private String accessCookie;
-
-	@Value("${jwt.refresh.cookie}")
-	private String refreshCookie;
-
 	/**
 	 * JWT의 Subject와 Claim으로 email 사용 -> 클레임의 name을 "email"으로 설정
 	 * JWT의 헤더에 들어오는 값 : 'Authorization(Key) = Bearer {토큰} (Value)' 형식
@@ -50,8 +35,19 @@ public class JwtService {
 	private static final String EMAIL_CLAIM = "email";
 	//private static final String BEARER = "Bearer ";
 	private static final String USER_NUMBER = "userNumber";
-
 	private final UserRepository userRepository;
+	@Value("${jwt.secretKey}")
+	private String secretKey;
+	@Value("${jwt.access.expiration}")
+	private Long accessTokenExpirationPeriod;
+	@Value("${jwt.refresh.expiration}")
+	private Long refreshTokenExpirationPeriod;
+	@Value("${jwt.access.cookie}")
+	private String accessCookie;
+	@Value("${jwt.refresh.cookie}")
+	private String refreshCookie;
+	@Value("${jwt.redirect-uri}")
+	private String frontendUrl;
 
 	/**
 	 * AccessToken 생성 메소드

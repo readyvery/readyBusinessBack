@@ -34,7 +34,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
 			log.info("OAuth2 Login 성공! - 로그인 성공 후 리다이렉트");
-			response.sendRedirect("http://localhost:3000/login");
+			response.sendRedirect(jwtService.getFrontendUrl());
 		} catch (Exception e) {
 			throw e;
 		}
