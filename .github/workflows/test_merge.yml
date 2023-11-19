@@ -51,7 +51,7 @@ jobs:
           BUCKET_NAME: ${{ secrets.CF_BUCKET_NAME }}
           ENDPOINT_URL: ${{ secrets.CF_ENDPOINT_URL }}
         run: |
-          aws s3 sync libs/ s3://$BUCKET_NAME/java/main/test \
+          aws s3 sync libs/ s3://$BUCKET_NAME/java/main/boss \
             --endpoint-url $ENDPOINT_URL --delete --exact-timestamps
 
       - name: SSH and deploy
@@ -63,12 +63,12 @@ jobs:
           port: ${{ secrets.TEST_PORT }}
           timeout: 40s  # 30초 기본
           script: |
-            aws s3 sync s3://readyvery-dev-server/java/main/test ./docker/java/test/jar \
+            aws s3 sync s3://readyvery-dev-server/java/main/boss ./docker/java/boss/jar \
             --endpoint-url https://29c6e4b55b1ddb8d2b6e69df21141caa.r2.cloudflarestorage.com \
             --delete --exact-timestamps
             
-            docker-compose build java-test
-            docker-compose up -d java-test
+            docker-compose build java-boss
+            docker-compose up -d java-boss
 
       - name: Discordbot alert         # 디스코드 알림
         uses: sarisia/actions-status-discord@v1.13.0
