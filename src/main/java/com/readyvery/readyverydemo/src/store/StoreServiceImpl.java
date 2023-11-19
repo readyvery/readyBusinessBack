@@ -28,6 +28,14 @@ public class StoreServiceImpl implements StoreService {
 		return storeMapper.storeStatusToStoreStatusRes(ceoInfo.getStore().isStatus());
 	}
 
+	@Override
+	public StoreStatusRes updateStoreStatusById(Long id, boolean status) {
+		CeoInfo ceoInfo = getCeoInfo(id);
+		ceoInfo.getStore().updateStatus(status);
+		storeRepository.save(ceoInfo.getStore());
+		return storeMapper.storeStatusToStoreStatusRes(ceoInfo.getStore().isStatus());
+	}
+
 	private CeoInfo getCeoInfo(Long id) {
 		return ceoRepository.findById(id).orElseThrow(
 			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
