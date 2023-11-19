@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "STORES")
+@Table(name = "STORE")
 @AllArgsConstructor
 @Slf4j
 public class Store extends BaseTimeEntity {
@@ -64,17 +64,19 @@ public class Store extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Grade grade;
 
-	//가게 사장님 연관관계 매핑
+	// //가게 사장님 연관관계 매핑
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ceo_idx")
 	private CeoInfo ceoInfo;
 
-	//가게 메뉴 연관관계 매핑
+	//가게 메뉴 카테고리 연관관계 매핑
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	private List<Foodie> foodies = new ArrayList<>();
+	private List<FoodieCategory> foodieCategories = new ArrayList<>();
 
 	//가게 장바구니 연관관계 매핑
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
 	private List<Cart> carts = new ArrayList<>();
 
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	private List<StoreImg> imgs = new ArrayList<>();
 }

@@ -2,6 +2,7 @@ package com.readyvery.readyverydemo.security.oauth2;
 
 import java.util.Map;
 
+import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.domain.SocialType;
 import com.readyvery.readyverydemo.domain.UserInfo;
@@ -53,8 +54,8 @@ public class OAuthAttributes {
 	 * email에는 UUID로 중복 없는 랜덤 값 생성
 	 * role은 USER로 설정
 	 */
-	public UserInfo toEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
-		return UserInfo.builder()
+	public CeoInfo toEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
+		return CeoInfo.builder()
 			.socialType(socialType)
 			.socialId(oauth2UserInfo.getId())
 			.email(oauth2UserInfo.getEmail())

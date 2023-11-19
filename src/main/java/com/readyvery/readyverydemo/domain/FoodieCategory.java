@@ -1,5 +1,6 @@
 package com.readyvery.readyverydemo.domain;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,32 +24,24 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "FOODIE_OPTION")
+@Table(name = "FOODIE_CATEGORY")
 @AllArgsConstructor
 @Slf4j
-public class FoodieOption extends BaseTimeEntity {
-
+public class FoodieCategory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "foodie_option_idx")
+	@Column(name = "foodie_category_idx")
 	private Long id;
 
-	//식품 옵션 이름
 	@Column(nullable = false)
 	private String name;
 
-	//식품 옵션 가격
-	@Column(nullable = false)
-	private Long price;
-
-	//식품 옵션 연관관계 매핑
+	//메뉴 - 가게 연관관계 매핑
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "foodie_option_category_idx")
-	private FoodieOptionCategory foodieOptionCategory;
+	@JoinColumn(name = "store_idx")
+	private Store store;
 
-	// 식품 옵션 - 장바구니 옵션 연관관계 매핑
-	@OneToMany(mappedBy = "foodieOption", cascade = CascadeType.ALL)
-	private List<CartOption> cartOptions = new ArrayList<CartOption>();
-
+	@OneToMany(mappedBy = "foodieCategory", cascade = CascadeType.ALL)
+	private List<Foodie> foodies = new ArrayList<>();
 }
 

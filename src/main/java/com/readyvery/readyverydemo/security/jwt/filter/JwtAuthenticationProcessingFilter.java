@@ -1,17 +1,19 @@
 package com.readyvery.readyverydemo.security.jwt.filter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.readyvery.readyverydemo.domain.UserInfo;
-import com.readyvery.readyverydemo.domain.repository.UserRepository;
+import com.readyvery.readyverydemo.domain.CeoInfo;
+import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
 
 import jakarta.servlet.FilterChain;
@@ -28,7 +30,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
 
 	private final JwtService jwtService;
-	private final UserRepository userRepository;
+	private final CeoRepository ceoRepository;
 
 	private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -73,7 +75,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 *  그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
 	 */
 	public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-		userRepository.findByRefreshToken(refreshToken)
+		ceoRepository.findByRefreshToken(refreshToken)
 			.ifPresent(user -> {
 				String reIssuedRefreshToken = reIssueRefreshToken(user);
 				jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
@@ -86,10 +88,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 * jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후
 	 * DB에 재발급한 리프레시 토큰 업데이트 후 Flush
 	 */
-	private String reIssueRefreshToken(UserInfo userInfo) {
+	private String reIssueRefreshToken(CeoInfo ceoInfo) {
 		String reIssuedRefreshToken = jwtService.createRefreshToken();
-		userInfo.updateRefresh(reIssuedRefreshToken);
-		userRepository.saveAndFlush(userInfo);
+		ceoInfo.updateRefresh(reIssuedRefreshToken);
+		ceoRepository.saveAndFlush(ceoInfo);
 		return reIssuedRefreshToken;
 	}
 
@@ -107,7 +109,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		jwtService.extractAccessTokenFromCookies(request)
 			.filter(jwtService::isTokenValid)
 			.ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-				.ifPresent(email -> userRepository.findByEmail(email)
+				.ifPresent(email -> ceoRepository.findByEmail(email)
 					.ifPresent(this::saveAuthentication)));
 
 		filterChain.doFilter(request, response);
@@ -128,12 +130,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후,
 	 * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
 	 */
-	public void saveAuthentication(UserInfo myUser) {
+	public void saveAuthentication(CeoInfo myUser) {
 
-		UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-			.username(myUser.getEmail())
+		CustomUserDetails userDetailsUser = CustomUserDetails.builder()
+			.id(myUser.getId())
+			.email(myUser.getEmail())
 			.password("readyvery")
-			.roles(myUser.getRole().name())
+			.authorities(Collections.singletonList(new SimpleGrantedAuthority(myUser.getRole().toString())))
 			.build();
 
 		Authentication authentication =

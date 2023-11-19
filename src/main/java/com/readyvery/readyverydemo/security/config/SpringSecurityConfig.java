@@ -1,7 +1,5 @@
 package com.readyvery.readyverydemo.security.config;
 
-import static org.springframework.security.config.Customizer.*;
-
 import java.util.Arrays;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -20,7 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.readyvery.readyverydemo.domain.repository.UserRepository;
+import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.security.exception.CustomAuthenticationEntryPoint;
 import com.readyvery.readyverydemo.security.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
@@ -35,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class SpringSecurityConfig {
 
 	private final JwtService jwtService;
-	private final UserRepository userRepository;
+	private final CeoRepository ceoRepository;
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 	private final CustomOAuth2UserService customOAuth2UserService;
@@ -97,7 +95,12 @@ public class SpringSecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("*"));
-		configuration.setAllowedMethods(Arrays.asList("POST", "PATCH", "GET", "DELETE"));
+		//configuration.setAllowedMethods(Arrays.asList("POST", "PATCH", "GET", "DELETE"));
+
+		// TODO: 이 부분은 나중에 삭제해야 됨
+		configuration.setAllowedMethods(Arrays.asList("*")); // 모든 HTTP 메서드 허용
+		configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 헤더 허용
+		configuration.setAllowCredentials(true); // 크레덴셜(쿠키, HTTP 인증 등) 허용
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
@@ -112,7 +115,7 @@ public class SpringSecurityConfig {
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
 		JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService,
-			userRepository);
+			ceoRepository);
 		return jwtAuthenticationFilter;
 	}
 }
