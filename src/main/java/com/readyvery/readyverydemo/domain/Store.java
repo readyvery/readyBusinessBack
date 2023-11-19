@@ -79,4 +79,8 @@ public class Store extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
 	private List<StoreImg> imgs = new ArrayList<>();
+
+	public void updateStatus(boolean status) {
+		this.status = status;
+	}
 }
