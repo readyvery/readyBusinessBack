@@ -5,7 +5,6 @@ import java.util.Map;
 import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.domain.SocialType;
-import com.readyvery.readyverydemo.domain.UserInfo;
 import com.readyvery.readyverydemo.security.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.readyvery.readyverydemo.security.oauth2.userinfo.OAuth2UserInfo;
 
@@ -59,6 +58,7 @@ public class OAuthAttributes {
 			.socialType(socialType)
 			.socialId(oauth2UserInfo.getId())
 			.email(oauth2UserInfo.getEmail())
+			.phone(oauth2UserInfo.getPhoneNumber())
 			.nickName(oauth2UserInfo.getNickName())
 			.imageUrl(oauth2UserInfo.getImageUrl())
 			.role(Role.USER)
