@@ -29,7 +29,7 @@ public class CeoServiceImpl implements CeoService {
 
 	@Override
 	public CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails) {
-
+		verifyUserDetails(userDetails);
 		return ceoMapper.ceoInfoToCeoAuthRes(userDetails);
 
 	}
@@ -64,6 +64,12 @@ public class CeoServiceImpl implements CeoService {
 		return ceoRepository.findById(id).orElseThrow(
 			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
 		);
+	}
+
+	private void verifyUserDetails(CustomUserDetails userDetails) {
+		if (userDetails == null) {
+			throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+		}
 	}
 
 }
