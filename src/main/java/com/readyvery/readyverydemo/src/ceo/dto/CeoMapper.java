@@ -12,6 +12,8 @@ public class CeoMapper {
 		return CeoAuthRes.builder()
 			.id(userDetails.getId())
 			.email(userDetails.getEmail())
+			.auth(userDetails.isEnabled())
+			.admin(false)
 			.build();
 	}
 
