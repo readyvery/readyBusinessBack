@@ -45,3 +45,4 @@ public class CartOption extends BaseTimeEntity {
 	private FoodieOptionCategory foodieOptionCategory;
 
 }
+

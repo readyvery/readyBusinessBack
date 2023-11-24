@@ -1,6 +1,5 @@
 package com.readyvery.readyverydemo.domain;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,3 +44,4 @@ public class Event extends BaseTimeEntity {
 	private List<CouponDetail> coupons = new ArrayList<CouponDetail>();
 
 }
+

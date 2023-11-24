@@ -1,6 +1,5 @@
 package com.readyvery.readyverydemo.domain;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,23 +18,25 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Entity
 @Builder
-@Table(name = "COUPONMENU")
+@Table(name = "ORDER_ITEM_OPTION")
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
-public class CouponMenu extends BaseTimeEntity {
+public class OrderItemOption {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "coupon_menu_idx")
+	@Column(name = "order_item_option_idx")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "coupon_detail_idx")
-	private CouponDetail couponDetail;
+	@JoinColumn(name = "order_item_idx")
+	private OrderItem orderItem;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "foodie_idx")
-	private Foodie foodie;
+	@JoinColumn(name = "foodie_option_idx")
+	private FoodieOption foodieOption;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "foodie_option_category_idx")
+	private FoodieOptionCategory foodieOptionCategory;
 }
-

@@ -53,6 +53,11 @@ public class Foodie extends BaseTimeEntity {
 	@Column(nullable = false, columnDefinition = "BOOLEAN default false")
 	private boolean hit;
 
+	//메뉴 - 가게 연관관계 매핑
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "store_idx")
+	// private Store store;
+
 	//메뉴 - 메뉴 카테고리 연관관계 매핑
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "foodie_category_idx")
@@ -71,6 +76,8 @@ public class Foodie extends BaseTimeEntity {
 	private List<CartItem> cartItems = new ArrayList<CartItem>();
 
 	@OneToMany(mappedBy = "foodie", cascade = CascadeType.ALL)
-	private List<CouponMenu> couponMenus = new ArrayList<CouponMenu>();
+	private List<CouponDetail> couponDetails = new ArrayList<CouponDetail>();
 
+	@OneToMany(mappedBy = "foodie", cascade = CascadeType.ALL)
+	private List<OrderItem> orderItems = new ArrayList<OrderItem>();
 }

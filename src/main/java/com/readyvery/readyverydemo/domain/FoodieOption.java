@@ -50,5 +50,9 @@ public class FoodieOption extends BaseTimeEntity {
 	@OneToMany(mappedBy = "foodieOption", cascade = CascadeType.ALL)
 	private List<CartOption> cartOptions = new ArrayList<CartOption>();
 
+	// order item option 연관 관계 매핑
+	@OneToMany(mappedBy = "foodieOption", cascade = CascadeType.ALL)
+	private List<OrderItemOption> orderItemOptions = new ArrayList<OrderItemOption>();
 }
+
 

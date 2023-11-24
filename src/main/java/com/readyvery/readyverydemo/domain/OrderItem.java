@@ -1,43 +1,51 @@
 package com.readyvery.readyverydemo.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "STORE_IMG")
+@Builder
+@Table(name = "ORDER_ITEM")
 @AllArgsConstructor
+@NoArgsConstructor
 @Slf4j
-public class StoreImg {
-
+public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "store_img_idx")
+	@Column(name = "order_item_idx")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "store_idx")
-	private Store store;
-
 	@Column
-	private String imgUrl;
+	private Long count;
 
-	@Enumerated(EnumType.STRING)
-	private ImgSize imgSize;
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "order_idx")
+	// private Order order;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "foodie_idx")
+	private Foodie foodie;
+
+	@OneToMany(mappedBy = "orderItem")
+	@Builder.Default
+	private List<OrderItemOption> orderItemOptions = new ArrayList<OrderItemOption>();
+
 }
 
