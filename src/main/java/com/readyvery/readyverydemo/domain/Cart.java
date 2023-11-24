@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 @Builder
+@Setter
 public class Cart extends BaseTimeEntity {
 
 	@Id
@@ -53,6 +55,10 @@ public class Cart extends BaseTimeEntity {
 	@Column
 	@Builder.Default
 	private Boolean isDeleted = false;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "cart")
+	private List<Order> orders = new ArrayList<Order>();
 
 	// 장바구니 장바구니 아이템 연관관계 매핑
 	@Builder.Default

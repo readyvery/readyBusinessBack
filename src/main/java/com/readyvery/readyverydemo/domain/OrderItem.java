@@ -48,3 +48,4 @@ public class OrderItem {
 	private List<OrderItemOption> orderItemOptions = new ArrayList<OrderItemOption>();
 
 }
+

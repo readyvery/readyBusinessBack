@@ -1,5 +1,7 @@
 package com.readyvery.readyverydemo.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Setter
 @Slf4j
-public class Order {
+public class Order extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_idx")
@@ -67,6 +69,15 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	private Progress progress;
 
+	@Column
+	private Boolean payStatus; // 결제 성공 실패 여부
+
+	@Column
+	private LocalDateTime estimatedTime;
+
+	@Column
+	private Long inOut;
+
 	// 가게 아이템 연관 관계
 	// @OneToMany(mappedBy = "order")
 	// @Builder.Default
@@ -82,7 +93,7 @@ public class Order {
 	@JoinColumn(name = "user_idx")
 	private UserInfo userInfo;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cart_idx")
 	private Cart cart;
 

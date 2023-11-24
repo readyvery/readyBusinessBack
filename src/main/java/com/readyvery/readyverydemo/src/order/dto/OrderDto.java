@@ -11,7 +11,7 @@ import lombok.Getter;
 public class OrderDto {
 	private Long idx;
 	private String orderNum;
-	private String pickUp;
+	private Long pickUp;
 	private List<FoodieDto> foodies;
 	private String phone;
 	private LocalDateTime time;

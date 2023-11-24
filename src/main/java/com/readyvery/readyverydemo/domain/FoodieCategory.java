@@ -1,6 +1,5 @@
 package com.readyvery.readyverydemo.domain;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,4 +43,3 @@ public class FoodieCategory {
 	@OneToMany(mappedBy = "foodieCategory", cascade = CascadeType.ALL)
 	private List<Foodie> foodies = new ArrayList<>();
 }
-
