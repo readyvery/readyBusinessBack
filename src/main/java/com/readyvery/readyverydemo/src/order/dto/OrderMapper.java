@@ -23,7 +23,8 @@ public class OrderMapper {
 	private OrderDto toOrderDto(Order order) {
 		return OrderDto.builder()
 			.idx(order.getId())
-			.orderNum(order.getOrderId())
+			.orderNum(order.getOrderNumber())
+			.orderId(order.getOrderId())
 			.pickUp(order.getInOut())
 			.time(order.getCreatedAt())
 			.phone(order.getUserInfo().getPhone())
@@ -39,6 +40,12 @@ public class OrderMapper {
 			.count(cartItem.getCount())
 			.options(
 				cartItem.getCartOptions().stream().map(cartOption -> cartOption.getFoodieOption().getName()).toList())
+			.build();
+	}
+
+	public DefaultRes tosspaymentDtoToCancelRes() {
+		return DefaultRes.builder()
+			.message("취소 성공")
 			.build();
 	}
 }
