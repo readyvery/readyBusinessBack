@@ -112,7 +112,7 @@ public class Order extends BaseTimeEntity {
 		this.progress = progress;
 	}
 
-	public void OrderTime(Long time) {
+	public void orderTime(Long time) {
 		this.estimatedTime = LocalDateTime.now().plusMinutes(time);
 	}
 

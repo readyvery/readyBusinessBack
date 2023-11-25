@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
 			if (request.getTime() == null) {
 				throw new BusinessLogicException(ExceptionCode.NOT_FOUND_TIME);
 			}
-			order.OrderTime(request.getTime());
+			order.orderTime(request.getTime());
 			return;
 		} else if (order.getProgress() == Progress.ORDER && request.getStatus() == Progress.CANCEL) {
 			if (request.getRejectReason() == null) {
