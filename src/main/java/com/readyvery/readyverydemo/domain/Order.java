@@ -103,4 +103,20 @@ public class Order extends BaseTimeEntity {
 
 	@OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
 	private Receipt receipt;
+
+	public void completeOrder(Progress progress) {
+		this.progress = progress;
+	}
+
+	public void cancelOrder(Progress progress) {
+		this.progress = progress;
+	}
+
+	public void OrderTime(Long time) {
+		this.estimatedTime = LocalDateTime.now().plusMinutes(time);
+	}
+
+	public void cancelPayStatus() {
+		this.payStatus = false;
+	}
 }

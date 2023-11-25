@@ -15,7 +15,11 @@ public enum ExceptionCode {
 	NOT_FOUND_STORE(404, "Not found store."),
 	NOT_LOGIN_USER(401, "Not login user."),
 	NOT_FOUND_ORDER(404, "Not found order."),
-	NOT_PROGRESS_ORDER(400, "Not progress order.");
+	NOT_PROGRESS_ORDER(400, "Not progress order."),
+	NOT_CHANGE_ORDER(400, "Not change order."),
+	NOT_FOUND_TIME(404, "Not found time."),
+	TOSS_PAYMENT_SUCCESS_FAIL(400, "Toss payment success fail."),
+	NOT_FOUND_REJECT_REASON(404, "Not found reject reason.");
 
 	private int status;
 	private String message;
