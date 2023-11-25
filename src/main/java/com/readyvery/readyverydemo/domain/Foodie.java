@@ -80,4 +80,8 @@ public class Foodie extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "foodie", cascade = CascadeType.ALL)
 	private List<OrderItem> orderItems = new ArrayList<OrderItem>();
+
+	public void updateCheckSoldOut(boolean soldOut) {
+		this.soldOut = soldOut;
+	}
 }

@@ -19,7 +19,9 @@ public enum ExceptionCode {
 	NOT_CHANGE_ORDER(400, "Not change order."),
 	NOT_FOUND_TIME(404, "Not found time."),
 	TOSS_PAYMENT_SUCCESS_FAIL(400, "Toss payment success fail."),
-	NOT_FOUND_REJECT_REASON(404, "Not found reject reason.");
+	NOT_FOUND_REJECT_REASON(404, "Not found reject reason."),
+	FOODIE_NOT_FOUND(404, "Foodie does not exists."),
+	FOODIE_NOT_MATCHED_STORE(400, "Foodie does not match in store.");
 
 	private int status;
 	private String message;
