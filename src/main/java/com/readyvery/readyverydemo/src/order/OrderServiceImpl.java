@@ -52,7 +52,9 @@ public class OrderServiceImpl implements OrderService {
 		List<Order> orders = orderRepository.findAllByProgressAndStoreId(progress, ceoInfo.getStore().getId());
 
 		if (orders.isEmpty()) {
-			throw new BusinessLogicException(ExceptionCode.NOT_FOUND_ORDER);
+			return OrderRegisterRes.builder()
+				.orders(Collections.emptyList())
+				.build();
 		}
 		return orderMapper.orderToOrderRegisterRes(orders);
 	}

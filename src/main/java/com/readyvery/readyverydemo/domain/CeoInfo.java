@@ -93,4 +93,9 @@ public class CeoInfo extends BaseTimeEntity {
 		this.refreshToken = updateRefreshToken;
 	}
 
+	public void updateRemoveCeoDate() {
+		this.status = true;
+		this.deleteDate = LocalDateTime.now();
+	}
+
 }
