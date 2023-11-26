@@ -16,5 +16,6 @@ public class OrderDto {
 	private List<FoodieDto> foodies;
 	private String phone;
 	private LocalDateTime time;
+	private String method;
 	private Long price;
 }
