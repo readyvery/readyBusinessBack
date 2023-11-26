@@ -1,5 +1,7 @@
 package com.readyvery.readyverydemo.src.ceo;
 
+import java.io.IOException;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -61,10 +65,10 @@ public class CeoController {
 	 * 사용자 로그아웃
 	 */
 	@GetMapping("/user/logout")
-	public boolean logout(@AuthenticationPrincipal CustomUserDetails userDetails, HttpServletResponse response) {
+	public CeoLogoutRes logout(@AuthenticationPrincipal CustomUserDetails userDetails, HttpServletResponse response) {
 
-		ceoServiceImpl.removeRefreshTokenInDB(userDetails.getId(), response);
-		return true;
+		return ceoServiceImpl.removeRefreshTokenInDB(userDetails.getId(), response);
+
 	}
 
 	/**
@@ -75,6 +79,18 @@ public class CeoController {
 	@GetMapping("/refresh/token")
 	public boolean refreshEndpoint() {
 		return true;
+	}
+
+	/**
+	 * 회원 탈퇴
+	 * @param userDetails
+	 * @return
+	 * @throws IOException
+	 */
+	@GetMapping("/user/remove")
+	public CeoRemoveRes remove(@AuthenticationPrincipal CustomUserDetails userDetails,
+		HttpServletResponse response) throws IOException {
+		return ceoServiceImpl.removeUser(userDetails.getId(), response);
 	}
 
 }
