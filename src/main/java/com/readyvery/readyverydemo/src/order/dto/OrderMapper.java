@@ -29,7 +29,13 @@ public class OrderMapper {
 			.time(order.getCreatedAt())
 			.phone(order.getUserInfo().getPhone())
 			.price(order.getAmount())
-			.foodies(order.getCart().getCartItems().stream().map(this::cartItemToFoodieDto).toList())
+			.method(order.getMethod())
+			.foodies(order.getCart()
+				.getCartItems()
+				.stream()
+				.filter(cartItem -> !cartItem.getIsDeleted())
+				.map(this::cartItemToFoodieDto)
+				.toList())
 			.build();
 
 	}
