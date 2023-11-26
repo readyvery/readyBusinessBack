@@ -51,7 +51,7 @@ jobs:
           BUCKET_NAME: ${{ secrets.CF_BUCKET_NAME }}
           ENDPOINT_URL: ${{ secrets.CF_ENDPOINT_URL }}
         run: |
-          aws s3 sync libs/ s3://$BUCKET_NAME/java/main/boss \
+          aws s3 sync build/libs/ s3://$BUCKET_NAME/java/main/boss \
             --endpoint-url $ENDPOINT_URL --delete --exact-timestamps
 
       - name: SSH and deploy
