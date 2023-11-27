@@ -66,7 +66,7 @@ public class SaleServiceImpl implements SaleService {
 
 	private List<SaleManagementDto> getSaleManagement(Long id, SaleManagementReq request) {
 		LocalDateTime startDateTime = convertToDateTime(request.getMonday());
-		LocalDateTime endDateTime = convertToDateTime(request.getMonday()).plusDays(6);
+		LocalDateTime endDateTime = convertToDateTime(request.getMonday()).plusDays(7);
 		return getSaleManagementData(id, startDateTime, endDateTime);
 	}
 
