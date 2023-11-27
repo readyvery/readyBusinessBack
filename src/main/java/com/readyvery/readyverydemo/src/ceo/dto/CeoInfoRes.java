@@ -9,6 +9,7 @@ public class CeoInfoRes {
 
 	private String name;
 	private String storeName;
+	private String subStoreName;
 	private String address;
 	private String phone;
 	private String openTime;
