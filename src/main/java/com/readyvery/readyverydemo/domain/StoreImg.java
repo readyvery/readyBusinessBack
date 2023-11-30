@@ -40,4 +40,3 @@ public class StoreImg {
 	@Enumerated(EnumType.STRING)
 	private ImgSize imgSize;
 }
-

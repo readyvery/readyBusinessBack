@@ -54,5 +54,3 @@ public class FoodieOption extends BaseTimeEntity {
 	@OneToMany(mappedBy = "foodieOption", cascade = CascadeType.ALL)
 	private List<OrderItemOption> orderItemOptions = new ArrayList<OrderItemOption>();
 }
-
-
