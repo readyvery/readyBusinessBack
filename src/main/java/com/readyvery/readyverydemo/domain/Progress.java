@@ -17,4 +17,3 @@ public enum Progress {
 	private final String key;
 	private final String value;
 }
-

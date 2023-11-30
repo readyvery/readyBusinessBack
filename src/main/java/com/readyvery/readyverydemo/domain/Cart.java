@@ -37,8 +37,10 @@ public class Cart extends BaseTimeEntity {
 	@Column(name = "cart_idx")
 	private Long id;
 
-	// 장바구니 유저 연관관계 매핑
+	@Column(nullable = false)
+	private Long inOut;
 
+	// 장바구니 유저 연관관계 매핑
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_idx")
 	private UserInfo userInfo;
