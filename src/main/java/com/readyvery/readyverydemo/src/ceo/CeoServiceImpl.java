@@ -92,7 +92,7 @@ public class CeoServiceImpl implements CeoService {
 	}
 
 	private CeoInfo getCeoInfo(Long id) {
-		return ceoRepository.findById(id).orElseThrow(
+		return ceoRepository.findTop1ById(id).orElseThrow(
 			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
 		);
 	}

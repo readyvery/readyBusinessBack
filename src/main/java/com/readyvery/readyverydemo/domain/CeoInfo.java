@@ -84,6 +84,7 @@ public class CeoInfo extends BaseTimeEntity {
 	private LocalDateTime lastLoginDate;
 
 	// 사장님 가게 연관관계 매핑
+	@Builder.Default
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_idx")
 	private Store store = null;
