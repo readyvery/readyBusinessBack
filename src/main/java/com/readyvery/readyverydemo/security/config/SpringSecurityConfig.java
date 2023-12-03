@@ -54,7 +54,7 @@ public class SpringSecurityConfig {
 			//== URL별 권한 관리 옵션 ==//
 			.authorizeHttpRequests((authz) -> authz
 				.requestMatchers(
-					"/jwt-test",
+					"/api/v1/jwt-test",
 					"/oauth2/**",
 					"/login",
 					"/api/v1/auth"

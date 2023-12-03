@@ -89,6 +89,7 @@ public class CeoServiceImpl implements CeoService {
 		refreshTokenCookie.setPath("/api/v1/refresh/token"); // 기존과 동일한 경로 설정
 		refreshTokenCookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 즉시 만료
 		response.addCookie(refreshTokenCookie);
+
 	}
 
 	private CeoInfo getCeoInfo(Long id) {

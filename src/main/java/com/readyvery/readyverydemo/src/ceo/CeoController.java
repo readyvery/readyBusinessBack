@@ -15,18 +15,15 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class CeoController {
 
 	private final CeoService ceoServiceImpl;
-
-	@GetMapping("/jwt-test")
-	public String jwtTest() {
-		return "jwtTest 요청 성공";
-	}
 
 	/**
 	 * 사용자 인증 체크
