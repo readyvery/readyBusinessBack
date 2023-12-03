@@ -53,6 +53,7 @@ public class OrderMapper {
 	private OptionDto cartItemToOptionDto(CartOption cartOption) {
 		return OptionDto.builder()
 			.name(cartOption.getFoodieOption().getName())
+			.price(cartOption.getFoodieOption().getPrice())
 			.category(cartOption.getFoodieOption().getFoodieOptionCategory().getName())
 			.build();
 	}

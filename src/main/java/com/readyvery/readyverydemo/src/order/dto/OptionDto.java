@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class OptionDto {
 	private String name;
-
+	private Long price;
 	private String category;
 }
