@@ -1,5 +1,7 @@
 package com.readyvery.readyverydemo.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,23 +22,29 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Entity
 @Builder
-@Table(name = "COUPONMENU")
+@Table(name = "ORDER_ITEM")
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
-public class CouponMenu extends BaseTimeEntity {
+public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "coupon_menu_idx")
+	@Column(name = "order_item_idx")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "coupon_detail_idx")
-	private CouponDetail couponDetail;
+	@Column
+	private Long count;
+
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "order_idx")
+	// private Order order;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "foodie_idx")
 	private Foodie foodie;
 
-}
+	@OneToMany(mappedBy = "orderItem")
+	@Builder.Default
+	private List<OrderItemOption> orderItemOptions = new ArrayList<OrderItemOption>();
 
+}

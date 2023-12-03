@@ -49,6 +49,10 @@ public class JwtService {
 	private String refreshCookie;
 	@Value("${jwt.redirect-uri}")
 	private String frontendUrl;
+	@Value("${jwt.access.cookie.domain}")
+	private String accessCookieDomain;
+	@Value("${jwt.refresh.cookie.domain}")
+	private String refreshCookieDomain;
 
 	/**
 	 * AccessToken 생성 메소드
@@ -156,7 +160,7 @@ public class JwtService {
 		//accessTokenCookie.setSecure(true);
 
 		//TODO: 이부분 삭제해야됌
-		accessTokenCookie.setDomain("localhost");
+		accessTokenCookie.setDomain(accessCookieDomain);
 
 		// 필요한 경우 동일한 사이트 속성 설정 (쿠키 전송에 대한 제한)
 		// accessTokenCookie.setSameSite("Strict");
@@ -178,7 +182,7 @@ public class JwtService {
 		// accessTokenCookie.setSecure(true);
 
 		//TODO: 이부분 삭제해야됌
-		refreshTokenCookie.setDomain("localhost");
+		refreshTokenCookie.setDomain(refreshCookieDomain);
 
 		// 필요한 경우 동일한 사이트 속성 설정 (쿠키 전송에 대한 제한)
 		// accessTokenCookie.setSameSite("Strict");

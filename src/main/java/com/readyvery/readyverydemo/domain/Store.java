@@ -8,13 +8,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -59,24 +56,46 @@ public class Store extends BaseTimeEntity {
 	@Column
 	private String adImgUrl;
 
+	// 가게 영어 이름
+	@Column
+	private String engName;
+
+	// 가게 서브 이름
+	@Column
+	private String subName;
+
+	// 가게 이벤트 메세지
+	@Column
+	private String eventMessage;
+
 	//가게 등급
 	@Column
 	@Enumerated(EnumType.STRING)
 	private Grade grade;
 
-	// //가게 사장님 연관관계 매핑
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ceo_idx")
-	private CeoInfo ceoInfo;
+	//가게 사장님 연관관계 매핑
+	@OneToMany(mappedBy = "store")
+	private List<CeoInfo> ceoInfos = new ArrayList<CeoInfo>();
 
 	//가게 메뉴 카테고리 연관관계 매핑
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	private List<FoodieCategory> foodieCategories = new ArrayList<>();
+	private List<FoodieCategory> foodieCategories = new ArrayList<FoodieCategory>();
+
+	//가게 메뉴 연관관계 매핑
+	// @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	// private List<Foodie> foodies = new ArrayList<>();
 
 	//가게 장바구니 연관관계 매핑
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	private List<Cart> carts = new ArrayList<>();
+	private List<Cart> carts = new ArrayList<Cart>();
 
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-	private List<StoreImg> imgs = new ArrayList<>();
+	private List<StoreImg> imgs = new ArrayList<StoreImg>();
+
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+	private List<Order> orders = new ArrayList<Order>();
+
+	public void updateStatus(boolean status) {
+		this.status = status;
+	}
 }

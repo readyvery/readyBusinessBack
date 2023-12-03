@@ -42,6 +42,7 @@ public class SpringSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 			// [PART 1]
+			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 			.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement((sessionManagement) ->
 				sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -53,9 +54,10 @@ public class SpringSecurityConfig {
 			//== URL별 권한 관리 옵션 ==//
 			.authorizeHttpRequests((authz) -> authz
 				.requestMatchers(
-					"/jwt-test",
+					"/api/v1/jwt-test",
 					"/oauth2/**",
-					"/login"
+					"/login",
+					"/api/v1/auth"
 				).permitAll() // 해당 요청은 인증이 필요함
 				.anyRequest().authenticated() // 위를 제외한 나머지는 모두 허용
 			)
@@ -93,14 +95,13 @@ public class SpringSecurityConfig {
 
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("*"));
-		//configuration.setAllowedMethods(Arrays.asList("POST", "PATCH", "GET", "DELETE"));
-
 		// TODO: 이 부분은 나중에 삭제해야 됨
-		configuration.setAllowedMethods(Arrays.asList("*")); // 모든 HTTP 메서드 허용
-		configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 헤더 허용
-		configuration.setAllowCredentials(true); // 크레덴셜(쿠키, HTTP 인증 등) 허용
+		//configuration.setAllowedMethods(Arrays.asList("*")); // 모든 HTTP 메서드 허용
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOriginPatterns(Arrays.asList("*")); // 변경된 설정
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);

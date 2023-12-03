@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -16,14 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "TAKE_OUTS")
+@Table(name = "TAKE_OUT")
 @AllArgsConstructor
 @Slf4j
 public class TakeOut {
 
-	//테이크 아웃 메뉴 연관관계 매핑
 	@Id
+	private Long id;
+
+	//테이크 아웃 메뉴 연관관계 매핑
 	@OneToOne(fetch = FetchType.LAZY)
+	@MapsId
 	@JoinColumn(name = "foodie_idx")
 	private Foodie foodie;
 

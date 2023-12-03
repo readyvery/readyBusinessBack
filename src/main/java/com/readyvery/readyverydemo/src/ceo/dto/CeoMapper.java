@@ -12,6 +12,8 @@ public class CeoMapper {
 		return CeoAuthRes.builder()
 			.id(userDetails.getId())
 			.email(userDetails.getEmail())
+			.auth(userDetails.isEnabled())
+			.admin(false)
 			.build();
 	}
 
@@ -19,6 +21,7 @@ public class CeoMapper {
 		return CeoInfoRes.builder()
 			.name(ceoInfo.getNickName())
 			.storeName(ceoInfo.getStore().getName())
+			.subStoreName(ceoInfo.getStore().getSubName())
 			.address(ceoInfo.getStore().getAddress())
 			.phone(ceoInfo.getPhone())
 			.openTime(ceoInfo.getStore().getTime())
