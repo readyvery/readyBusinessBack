@@ -15,7 +15,8 @@ import com.readyvery.readyverydemo.src.sale.dto.SaleManagementDto;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 	List<Order> findAllById(Long id);
 
-	List<Order> findAllByProgressAndStoreId(Progress progress, Long storeId);
+	List<Order> findAllByProgressAndStoreIdAndCreatedAtBetween(
+		Progress progress, Long storeId, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 	Optional<Order> findByOrderId(String orderId);
 
