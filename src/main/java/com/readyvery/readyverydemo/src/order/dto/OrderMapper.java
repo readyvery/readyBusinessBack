@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.readyvery.readyverydemo.domain.CartItem;
+import com.readyvery.readyverydemo.domain.CartOption;
 import com.readyvery.readyverydemo.domain.Order;
 
 @Component
@@ -45,7 +46,15 @@ public class OrderMapper {
 			.name(cartItem.getFoodie().getName())
 			.count(cartItem.getCount())
 			.options(
-				cartItem.getCartOptions().stream().map(cartOption -> cartOption.getFoodieOption().getName()).toList())
+				cartItem.getCartOptions().stream().map(this::cartItemToOptionDto).toList())
+			.build();
+	}
+
+	private OptionDto cartItemToOptionDto(CartOption cartOption) {
+		return OptionDto.builder()
+			.name(cartOption.getFoodieOption().getName())
+			.price(cartOption.getFoodieOption().getPrice())
+			.category(cartOption.getFoodieOption().getFoodieOptionCategory().getName())
 			.build();
 	}
 

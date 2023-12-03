@@ -1,14 +1,12 @@
 package com.readyvery.readyverydemo.src.order.dto;
 
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class FoodieDto {
+public class OptionDto {
 	private String name;
-	private Long count;
-	private List<OptionDto> options;
+	private Long price;
+	private String category;
 }
