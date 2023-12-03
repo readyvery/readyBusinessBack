@@ -1,6 +1,8 @@
 package com.readyvery.readyverydemo.src.order;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Collections;
@@ -56,8 +58,10 @@ public class OrderServiceImpl implements OrderService {
 		if (progress == null) {
 			throw new BusinessLogicException(ExceptionCode.NOT_PROGRESS_ORDER);
 		}
-
-		List<Order> orders = orderRepository.findAllByProgressAndStoreId(progress, ceoInfo.getStore().getId());
+		LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+		LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
+		List<Order> orders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+			progress, ceoInfo.getStore().getId(), startOfDay, endOfDay);
 
 		if (orders.isEmpty()) {
 			return OrderRegisterRes.builder()
