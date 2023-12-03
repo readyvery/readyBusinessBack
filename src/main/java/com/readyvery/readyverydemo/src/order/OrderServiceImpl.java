@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
 		HashMap<String, String> variables = new HashMap<>();
 		variables.put("#{storeName}", order.getStore().getName());
 		variables.put("#{orderName}", order.getOrderName());
-		variables.put("#{orderNumber}", order.getOrderId());
+		variables.put("#{orderNumber}", order.getOrderNumber());
 		variables.put("#{orderId}", order.getOrderId());
 		return variables;
 	}
@@ -149,7 +149,6 @@ public class OrderServiceImpl implements OrderService {
 		HashMap<String, String> variables = new HashMap<>();
 		variables.put("#{storeName}", order.getStore().getName());
 		variables.put("#{orderName}", order.getOrderName());
-		variables.put("#{orderNumber}", order.getOrderId());
 		variables.put("#{cancelReason}", rejectReason);
 		return variables;
 	}
