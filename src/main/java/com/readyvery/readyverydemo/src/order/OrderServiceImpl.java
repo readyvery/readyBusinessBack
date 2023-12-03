@@ -172,10 +172,9 @@ public class OrderServiceImpl implements OrderService {
 			messageService.send(message);
 		} catch (NurigoMessageNotReceivedException exception) {
 			// 발송에 실패한 메시지 목록을 확인할 수 있습니다!
-			System.out.println(exception.getFailedMessageList());
-			System.out.println(exception.getMessage());
+			log.error(exception.getFailedMessageList());
 		} catch (Exception exception) {
-			System.out.println(exception.getMessage());
+			// System.out.println(exception.getMessage());
 		}
 	}
 
@@ -244,7 +243,7 @@ public class OrderServiceImpl implements OrderService {
 				new HttpEntity<>(params, headers),
 				TosspaymentDto.class);
 		} catch (Exception e) {
-			System.out.println("e.getMessage() = " + e.getMessage());
+			log.error("e.getMessage() = " + e.getMessage());
 			throw new BusinessLogicException(ExceptionCode.TOSS_PAYMENT_SUCCESS_FAIL);
 		}
 	}
