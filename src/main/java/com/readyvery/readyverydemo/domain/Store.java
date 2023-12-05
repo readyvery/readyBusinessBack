@@ -73,6 +73,9 @@ public class Store extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Grade grade;
 
+	@Column
+	private String account;
+
 	//가게 사장님 연관관계 매핑
 	@OneToMany(mappedBy = "store")
 	private List<CeoInfo> ceoInfos = new ArrayList<CeoInfo>();
