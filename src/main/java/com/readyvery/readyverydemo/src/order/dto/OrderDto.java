@@ -18,4 +18,5 @@ public class OrderDto {
 	private LocalDateTime time;
 	private String method;
 	private Long price;
+	private boolean isCouponUsed;
 }
