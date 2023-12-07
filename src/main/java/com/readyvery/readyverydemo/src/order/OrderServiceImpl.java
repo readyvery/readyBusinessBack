@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
 		HashMap<String, String> variables = new HashMap<>();
 		variables.put("#{storeName}", order.getStore().getName());
 		variables.put("#{orderName}", order.getOrderName());
-		variables.put("#{orderNumber}", order.getOrderId());
+		variables.put("#{orderNumber}", order.getOrderNumber());
 		variables.put("#{orderId}", order.getOrderId());
 		return variables;
 	}
@@ -153,7 +153,6 @@ public class OrderServiceImpl implements OrderService {
 		HashMap<String, String> variables = new HashMap<>();
 		variables.put("#{storeName}", order.getStore().getName());
 		variables.put("#{orderName}", order.getOrderName());
-		variables.put("#{orderNumber}", order.getOrderId());
 		variables.put("#{cancelReason}", rejectReason);
 		return variables;
 	}
@@ -233,6 +232,9 @@ public class OrderServiceImpl implements OrderService {
 		order.cancelPayStatus();
 		order.getReceipt().setCancels(tosspaymentDto.getCancels().toString());
 		order.getReceipt().setStatus(tosspaymentDto.getStatus());
+		if (order.getCoupon() != null) {
+			order.getCoupon().setUsed(false);
+		}
 	}
 
 	private TosspaymentDto requestTossPaymentCancel(String paymentKey, String rejectReason) {

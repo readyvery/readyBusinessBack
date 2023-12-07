@@ -25,7 +25,7 @@ public class CeoMapper {
 			.address(ceoInfo.getStore().getAddress())
 			.phone(ceoInfo.getPhone())
 			.openTime(ceoInfo.getStore().getTime())
-			.account(ceoInfo.getAccountNumber())
+			.account(ceoInfo.getStore().getAccount())
 			.build();
 	}
 }
