@@ -41,6 +41,10 @@ public class Foodie extends BaseTimeEntity {
 	@Column(nullable = true)
 	private String imgUrl;
 
+	//순서
+	@Column(nullable = false)
+	private Long sequence;
+
 	//식품 매진
 	@Column(nullable = false, columnDefinition = "BOOLEAN default false")
 	private boolean soldOut;
