@@ -5,7 +5,11 @@ import java.util.Arrays;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,9 +23,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.security.customlogin.filter.CustomJsonCeonamePasswordAuthenticationFilter;
+import com.readyvery.readyverydemo.security.customlogin.handler.LoginFailureHandler;
+import com.readyvery.readyverydemo.security.customlogin.handler.LoginSuccessHandler;
+import com.readyvery.readyverydemo.security.customlogin.service.CustomLoginCeoService;
 import com.readyvery.readyverydemo.security.exception.CustomAuthenticationEntryPoint;
 import com.readyvery.readyverydemo.security.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
+import com.readyvery.readyverydemo.security.jwt.service.JwtTokenizer;
 import com.readyvery.readyverydemo.security.oauth2.handler.OAuth2LoginFailureHandler;
 import com.readyvery.readyverydemo.security.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.readyvery.readyverydemo.security.oauth2.service.CustomOAuth2UserService;
@@ -29,11 +38,15 @@ import com.readyvery.readyverydemo.security.oauth2.service.CustomOAuth2UserServi
 import lombok.RequiredArgsConstructor;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
 
 	private final JwtService jwtService;
 	private final CeoRepository ceoRepository;
+	private final ObjectMapper objectMapper;
+	private final JwtTokenizer jwtTokenizer;
+	private final CustomLoginCeoService customLoginCeoService;
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 	private final CustomOAuth2UserService customOAuth2UserService;
@@ -53,13 +66,16 @@ public class SpringSecurityConfig {
 			// [PART 2]
 			//== URL별 권한 관리 옵션 ==//
 			.authorizeHttpRequests((authz) -> authz
+				.requestMatchers("/api/v1/user/join",
+					"/api/v1/user/login"
+				).anonymous() // 로그인되지 않은 사용자만 접근 가능
 				.requestMatchers(
 					"/api/v1/jwt-test",
 					"/oauth2/**",
 					"/login",
 					"/api/v1/auth"
-				).permitAll() // 해당 요청은 인증이 필요함
-				.anyRequest().authenticated() // 위를 제외한 나머지는 모두 허용
+				).permitAll() // 해당 요청은 모두 허용
+				.anyRequest().authenticated() // 위를 제외한 나머지는 모두 인증이 필요
 			)
 			// [PART 3]
 			//== 소셜 로그인 설정 ==//
@@ -78,8 +94,8 @@ public class SpringSecurityConfig {
 		// 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
 		// 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
 		// 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
-		http.addFilterBefore(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
-
+		http.addFilterAfter(customJsonCeonamePasswordAuthenticationFilter(), LogoutFilter.class);
+		http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonCeonamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 
@@ -89,9 +105,27 @@ public class SpringSecurityConfig {
 	}
 
 	@Bean
+	public AuthenticationManager authenticationManager() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setPasswordEncoder(passwordEncoder());
+		provider.setUserDetailsService(customLoginCeoService);
+		return new ProviderManager(provider);
+	}
+
+	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	} // 패스워드 인코더
+
+	@Bean
+	public LoginSuccessHandler loginSuccessHandler() {
+		return new LoginSuccessHandler(jwtService, ceoRepository, jwtTokenizer, objectMapper);
+	}
+
+	@Bean
+	public LoginFailureHandler loginFailureHandler() {
+		return new LoginFailureHandler(objectMapper);
+	}
 
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
@@ -112,6 +146,16 @@ public class SpringSecurityConfig {
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	} // 정적 리소스 보안 필터 해제
+
+	@Bean
+	public CustomJsonCeonamePasswordAuthenticationFilter customJsonCeonamePasswordAuthenticationFilter() {
+		CustomJsonCeonamePasswordAuthenticationFilter customJsonCeonamePasswordAuthenticationFilter =
+			new CustomJsonCeonamePasswordAuthenticationFilter(objectMapper);
+		customJsonCeonamePasswordAuthenticationFilter.setAuthenticationManager(authenticationManager());
+		customJsonCeonamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
+		customJsonCeonamePasswordAuthenticationFilter.setAuthenticationFailureHandler(loginFailureHandler());
+		return customJsonCeonamePasswordAuthenticationFilter;
+	}
 
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {

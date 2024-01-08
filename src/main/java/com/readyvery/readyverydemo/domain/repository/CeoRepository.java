@@ -14,4 +14,6 @@ public interface CeoRepository extends JpaRepository<CeoInfo, Long> {
 	Optional<CeoInfo> findByRefreshToken(String refreshToken);
 
 	Optional<CeoInfo> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
+
+	boolean existsByEmail(String email);
 }
