@@ -22,7 +22,8 @@ public enum ExceptionCode {
 	NOT_FOUND_REJECT_REASON(404, "Not found reject reason."),
 	FOODIE_NOT_FOUND(404, "Foodie does not exists."),
 	FOODIE_NOT_MATCHED_STORE(400, "Foodie does not match in store."),
-	SALE_NOT_FOUND(404, "Sale does not exists.");
+	SALE_NOT_FOUND(404, "Sale does not exists."),
+	EMAIL_DUPLICATION(404, "Email is duplicated.");
 
 	private int status;
 	private String message;

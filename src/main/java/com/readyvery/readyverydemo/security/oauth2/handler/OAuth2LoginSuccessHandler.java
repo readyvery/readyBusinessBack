@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.readyvery.readyverydemo.domain.repository.UserRepository;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
+import com.readyvery.readyverydemo.security.jwt.service.JwtTokenizer;
 import com.readyvery.readyverydemo.security.oauth2.CustomOAuth2User;
 
 import jakarta.servlet.ServletException;
@@ -22,7 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
-	private final UserRepository userRepository;
+
+	private final JwtTokenizer jwtTokenizer;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -33,7 +35,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 			CustomOAuth2User oAuth2User = (CustomOAuth2User)authentication.getPrincipal();
 
 			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-			response.sendRedirect(jwtService.getFrontendUrl());
+			response.sendRedirect(jwtTokenizer.getFrontendUrl());
 		} catch (Exception e) {
 			throw e;
 		}
