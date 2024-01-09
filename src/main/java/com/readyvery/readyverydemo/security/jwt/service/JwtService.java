@@ -26,12 +26,12 @@ public interface JwtService {
 	/**
 	 * 쿠키에서 RefreshToken 추출
 	 */
-	Optional<String> extractRefreshTokenFromCookies(HttpServletRequest request);
+	Optional<String> extractRefreshToken(HttpServletRequest request);
 
 	/**
 	 * 쿠키에서 AccessToken 추출
 	 */
-	Optional<String> extractAccessTokenFromCookies(HttpServletRequest request);
+	Optional<String> extractAccessToken(HttpServletRequest request);
 
 	/**
 	 * AccessToken에서 Email 추출

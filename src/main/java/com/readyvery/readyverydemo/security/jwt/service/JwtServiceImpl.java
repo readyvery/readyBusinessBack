@@ -1,7 +1,5 @@
 package com.readyvery.readyverydemo.security.jwt.service;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -9,8 +7,13 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
+import com.readyvery.readyverydemo.global.exception.ExceptionCode;
+import com.readyvery.readyverydemo.security.jwt.config.JwtConfig;
+import com.readyvery.readyverydemo.security.jwt.service.create.JwtTokenGenerator;
+import com.readyvery.readyverydemo.security.jwt.service.extract.ExtractToken;
+import com.readyvery.readyverydemo.security.jwt.service.sendmanger.JwtTokenizer;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -25,15 +28,17 @@ public class JwtServiceImpl implements JwtService {
 
 	private final CeoRepository ceoRepository;
 	private final JwtTokenizer jwtTokenizer;
+	private final JwtTokenGenerator jwtTokenGenerator;
+	private final JwtConfig jwtConfig;
+	private final ExtractToken extractToken;
 
 	/**
 	 * AccessToken 생성 메소드
 	 */
 	@Override
 	public String createAccessToken(String email) {
-		CeoInfo ceoInfo = ceoRepository.findByEmail(email)
-			.orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
-		return jwtTokenizer.generateAccessToken(email, ceoInfo.getId());
+		CeoInfo ceoInfo = getCeoInfo(email);
+		return jwtTokenGenerator.generateAccessToken(email, ceoInfo.getId());
 	}
 
 	/**
@@ -43,7 +48,7 @@ public class JwtServiceImpl implements JwtService {
 	@Override
 	public String createRefreshToken() {
 
-		return jwtTokenizer.generateRefreshToken();
+		return jwtTokenGenerator.generateRefreshToken();
 	}
 
 	/**
@@ -52,41 +57,25 @@ public class JwtServiceImpl implements JwtService {
 	@Override
 	public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
 
-		response.setStatus(HttpServletResponse.SC_OK);
-
-		jwtTokenizer.setAccessTokenCookie(response, accessToken);
-		jwtTokenizer.setRefreshTokenCookie(response, refreshToken);
+		jwtTokenizer.addAccessTokenResponseBody(response, accessToken);
+		jwtTokenizer.addRefreshTokenCookie(response, refreshToken);
 		log.info("Access Token, Refresh Token 헤더 설정 완료");
 	}
 
 	/**
-	 * 쿠키에서 RefreshToken 추출
+	 * RefreshToken 추출
 	 */
 	@Override
-	public Optional<String> extractRefreshTokenFromCookies(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			return Arrays.stream(cookies)
-				.filter(cookie -> jwtTokenizer.getRefreshCookie().equals(cookie.getName())) // 올바른 필터링 조건
-				.findFirst()
-				.map(Cookie::getValue);
-		}
-		return Optional.empty();
+	public Optional<String> extractRefreshToken(HttpServletRequest request) {
+		return extractToken.extractTokenCookie(request, jwtConfig.getRefreshTokenName());
 	}
 
 	/**
-	 * 쿠키에서 AccessToken 추출
+	 * AccessToken 추출
 	 */
 	@Override
-	public Optional<String> extractAccessTokenFromCookies(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			return Arrays.stream(cookies)
-				.filter(cookie -> jwtTokenizer.getAccessCookie().equals(cookie.getName())) // 올바른 필터링 조건
-				.findFirst()
-				.map(Cookie::getValue);
-		}
-		return Optional.empty();
+	public Optional<String> extractAccessToken(HttpServletRequest request) {
+		return extractToken.extractTokenHeader(request, jwtConfig.getAccessTokenName());
 	}
 
 	/**
@@ -113,9 +102,7 @@ public class JwtServiceImpl implements JwtService {
 
 	@Override
 	public void updateRefreshToken(String email, String refreshToken) {
-		CeoInfo ceoInfo = ceoRepository.findByEmail(email)
-			.orElseThrow(() -> new NoSuchElementException("일치하는 회원이 없습니다."));
-
+		CeoInfo ceoInfo = getCeoInfo(email);
 		ceoInfo.updateRefresh(refreshToken);
 		ceoRepository.save(ceoInfo);
 	}
@@ -123,12 +110,18 @@ public class JwtServiceImpl implements JwtService {
 	@Override
 	public boolean isTokenValid(String token) {
 		try {
-			JWT.require(jwtTokenizer.getAlgorithm()).build().verify(token);
+			JWT.require(jwtConfig.getAlgorithm()).build().verify(token);
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
 			return false;
 		}
+	}
+
+	private CeoInfo getCeoInfo(String email) {
+		return ceoRepository.findByEmail(email).orElseThrow(
+			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
+		);
 	}
 
 }

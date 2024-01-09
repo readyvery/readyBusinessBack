@@ -25,6 +25,7 @@ public class JwtConfig {
 	public static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
 	public static final String EMAIL_CLAIM = "email";
 	public static final String USER_NUMBER = "userNumber";
+	public static final String BEARER = "Bearer ";
 
 	@Value("${jwt.secretKey}")
 	public void setSecretKey(String secretKey) {
