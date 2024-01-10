@@ -119,7 +119,7 @@ public class SpringSecurityConfig {
 
 	@Bean
 	public LoginSuccessHandler loginSuccessHandler() {
-		return new LoginSuccessHandler(jwtService, ceoRepository, jwtConfig, objectMapper);
+		return new LoginSuccessHandler(jwtService, ceoRepository);
 	}
 
 	@Bean

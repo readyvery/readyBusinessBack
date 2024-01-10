@@ -38,12 +38,10 @@ public class JwtTokenizer {
 			jwtConfig.getRefreshTokenExpirationPeriod().intValue(), true);
 	}
 
-	public void addAccessTokenResponseBody(HttpServletResponse response, String accessToken) {
-		tokenSendManager.addTokenResponseBody(response, accessToken);
-	}
+	public void addAccessRefreshTokenResponseBody(HttpServletResponse response, String accessToken,
+		String refreshToken) {
+		tokenSendManager.addTokenResponseBody(response, accessToken, refreshToken);
 
-	public void addRefreshTokenResponseBody(HttpServletResponse response, String refreshToken) {
-		tokenSendManager.addTokenResponseBody(response, refreshToken);
 	}
 
 	public Optional<String> verifyAccessToken(String accessToken) {

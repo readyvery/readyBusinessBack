@@ -31,7 +31,7 @@ public class TokenSendManager {
 
 	}
 
-	public void addTokenResponseBody(HttpServletResponse response, String tokenValue) {
+	public void addTokenResponseBody(HttpServletResponse response, String accessToken, String refreshToken) {
 
 		// JSON 응답 생성 및 전송
 
@@ -40,7 +40,8 @@ public class TokenSendManager {
 		CeoLoginRes ceoLoginRes = CeoLoginRes.builder()
 			.success(true)
 			.message("로그인 성공")
-			.accessToken(tokenValue)
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
 			.build();
 
 		try {
