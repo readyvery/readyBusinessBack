@@ -76,7 +76,8 @@ public class JwtServiceImpl implements JwtService {
 	 */
 	@Override
 	public Optional<String> extractAccessToken(HttpServletRequest request) {
-		return extractToken.extractTokenHeader(request, jwtConfig.getAccessTokenName());
+		return extractToken.extractTokenCookie(request, jwtConfig.getAccessTokenName());
+		//return extractToken.extractTokenHeader(request, jwtConfig.getAccessTokenName());
 	}
 
 	/**

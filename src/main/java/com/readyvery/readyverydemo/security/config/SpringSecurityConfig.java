@@ -28,7 +28,6 @@ import com.readyvery.readyverydemo.security.customlogin.handler.LoginFailureHand
 import com.readyvery.readyverydemo.security.customlogin.handler.LoginSuccessHandler;
 import com.readyvery.readyverydemo.security.customlogin.service.CustomLoginCeoService;
 import com.readyvery.readyverydemo.security.exception.CustomAuthenticationEntryPoint;
-import com.readyvery.readyverydemo.security.jwt.config.JwtConfig;
 import com.readyvery.readyverydemo.security.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
 import com.readyvery.readyverydemo.security.oauth2.handler.OAuth2LoginFailureHandler;
@@ -45,7 +44,6 @@ public class SpringSecurityConfig {
 	private final JwtService jwtService;
 	private final CeoRepository ceoRepository;
 	private final ObjectMapper objectMapper;
-	private final JwtConfig jwtConfig;
 	private final CustomLoginCeoService customLoginCeoService;
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
@@ -96,6 +94,8 @@ public class SpringSecurityConfig {
 		// 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
 		http.addFilterAfter(customJsonCeonamePasswordAuthenticationFilter(), LogoutFilter.class);
 		http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonCeonamePasswordAuthenticationFilter.class);
+
+		// http.addFilterBefore(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
 		return http.build();
 	}
 
