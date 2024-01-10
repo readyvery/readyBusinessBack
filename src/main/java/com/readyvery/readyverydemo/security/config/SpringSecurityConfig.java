@@ -28,9 +28,9 @@ import com.readyvery.readyverydemo.security.customlogin.handler.LoginFailureHand
 import com.readyvery.readyverydemo.security.customlogin.handler.LoginSuccessHandler;
 import com.readyvery.readyverydemo.security.customlogin.service.CustomLoginCeoService;
 import com.readyvery.readyverydemo.security.exception.CustomAuthenticationEntryPoint;
+import com.readyvery.readyverydemo.security.jwt.config.JwtConfig;
 import com.readyvery.readyverydemo.security.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
-import com.readyvery.readyverydemo.security.jwt.service.JwtTokenizer;
 import com.readyvery.readyverydemo.security.oauth2.handler.OAuth2LoginFailureHandler;
 import com.readyvery.readyverydemo.security.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.readyvery.readyverydemo.security.oauth2.service.CustomOAuth2UserService;
@@ -45,7 +45,7 @@ public class SpringSecurityConfig {
 	private final JwtService jwtService;
 	private final CeoRepository ceoRepository;
 	private final ObjectMapper objectMapper;
-	private final JwtTokenizer jwtTokenizer;
+	private final JwtConfig jwtConfig;
 	private final CustomLoginCeoService customLoginCeoService;
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
@@ -119,7 +119,7 @@ public class SpringSecurityConfig {
 
 	@Bean
 	public LoginSuccessHandler loginSuccessHandler() {
-		return new LoginSuccessHandler(jwtService, ceoRepository, jwtTokenizer, objectMapper);
+		return new LoginSuccessHandler(jwtService, ceoRepository);
 	}
 
 	@Bean

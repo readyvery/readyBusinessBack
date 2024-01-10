@@ -8,4 +8,6 @@ import lombok.Getter;
 public class CeoLoginRes {
 	private boolean success;
 	private String message;
+	private String accessToken;
+	private String refreshToken;
 }
