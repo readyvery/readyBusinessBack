@@ -18,9 +18,9 @@ public interface CeoService {
 
 	CeoInfoRes getCeoInfoById(Long id);
 
-	CeoLogoutRes removeRefreshTokenInDB(Long id, HttpServletResponse response);
+	CeoLogoutRes removeRefreshTokenInDB(CustomUserDetails userDetails, HttpServletResponse response);
 
-	CeoRemoveRes removeUser(Long id, HttpServletResponse response) throws IOException;
+	CeoRemoveRes removeUser(CustomUserDetails userDetails, HttpServletResponse response) throws IOException;
 
 	CeoJoinRes join(CeoJoinReq ceoJoinReq);
 }

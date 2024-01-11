@@ -110,7 +110,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 			.filter(jwtService::isTokenValid)
 			.ifPresent(accessToken -> jwtService.extractEmail(accessToken)
 				.ifPresent(email -> ceoRepository.findByEmail(email)
-					.ifPresent(this::saveAuthentication)));
+					.ifPresent(user -> saveAuthentication(user, accessToken))));
 
 		filterChain.doFilter(request, response);
 	}
@@ -130,12 +130,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후,
 	 * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
 	 */
-	public void saveAuthentication(CeoInfo myUser) {
+	public void saveAuthentication(CeoInfo myUser, String accessToken) {
 
 		CustomUserDetails userDetailsUser = CustomUserDetails.builder()
 			.id(myUser.getId())
 			.email(myUser.getEmail())
 			.password("readyvery")
+			.accessToken(accessToken)
 			.authorities(Collections.singletonList(new SimpleGrantedAuthority(myUser.getRole().toString())))
 			.build();
 

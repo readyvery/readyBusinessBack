@@ -17,6 +17,8 @@ import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
+import com.readyvery.readyverydemo.redis.dao.RefreshToken;
+import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
@@ -40,6 +42,7 @@ public class CeoServiceImpl implements CeoService {
 	private final CeoMapper ceoMapper;
 	private final CeoApiConfig ceoApiConfig;
 	private final PasswordEncoder passwordEncoder;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Override
 	public CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails) {
@@ -55,9 +58,10 @@ public class CeoServiceImpl implements CeoService {
 	}
 
 	@Override
-	public CeoLogoutRes removeRefreshTokenInDB(Long id, HttpServletResponse response) {
-		CeoInfo user = getCeoInfo(id);
+	public CeoLogoutRes removeRefreshTokenInDB(CustomUserDetails userDetails, HttpServletResponse response) {
+		CeoInfo user = getCeoInfo(userDetails.getId());
 		user.updateRefresh(null); // Refresh Token을 null 또는 빈 문자열로 업데이트
+		refreshTokenRepository.save(new RefreshToken(String.valueOf(user.getId()), null, userDetails.getAccessToken()));
 		ceoRepository.save(user);
 		invalidateRefreshTokenCookie(response); // 쿠키 무효화
 		return CeoLogoutRes.builder()
@@ -67,12 +71,13 @@ public class CeoServiceImpl implements CeoService {
 	}
 
 	@Override
-	public CeoRemoveRes removeUser(Long id, HttpServletResponse response) throws IOException {
-		CeoInfo user = getCeoInfo(id);
+	public CeoRemoveRes removeUser(CustomUserDetails userDetails, HttpServletResponse response) throws IOException {
+		CeoInfo user = getCeoInfo(userDetails.getId());
 		requestToServer("KakaoAK " + ceoApiConfig.getServiceAppAdminKey(),
 			"target_id_type=user_id&target_id=" + user.getSocialId());
 		user.updateRemoveCeoDate();
 		user.updateRefresh(null); // Refresh Token을 null 또는 빈 문자열로 업데이트
+		refreshTokenRepository.save(new RefreshToken(String.valueOf(user.getId()), null, userDetails.getAccessToken()));
 		ceoRepository.save(user);
 		invalidateRefreshTokenCookie(response); // 쿠키 무효화
 		return CeoRemoveRes.builder()

@@ -42,6 +42,10 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
     //SOLAPI
     implementation 'net.nurigo:sdk:4.2.7'
 
