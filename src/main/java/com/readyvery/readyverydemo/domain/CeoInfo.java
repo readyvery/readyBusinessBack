@@ -2,6 +2,8 @@ package com.readyvery.readyverydemo.domain;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,12 +39,16 @@ public class CeoInfo extends BaseTimeEntity {
 	@Column(nullable = false, length = 45)
 	private String email;
 
+	// 비밀번호
+	@Column(nullable = false, length = 100)
+	private String password;
+
 	// 닉네임
 	@Column(nullable = false)
 	private String nickName;
 
 	// 프로필 이미지
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Column(nullable = true)
 	private String imageUrl;
 
 	// 전화번호
@@ -59,12 +65,12 @@ public class CeoInfo extends BaseTimeEntity {
 	private Role role;
 
 	// 소셜 로그인 타입
-	@Column(nullable = false)
+	@Column
 	@Enumerated(EnumType.STRING)
 	private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
 	// 소셜 로그인 타입의 식별자 값 (일반 로그인인 경우 null)
-	@Column(nullable = false)
+	@Column
 	private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
 	// 유저 상태
@@ -98,4 +104,7 @@ public class CeoInfo extends BaseTimeEntity {
 		this.deleteDate = LocalDateTime.now();
 	}
 
+	public void encodePassword(PasswordEncoder passwordEncoder) {
+		this.password = passwordEncoder.encode(this.password);;
+	}
 }

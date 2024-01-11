@@ -5,6 +5,8 @@ import java.io.IOException;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
@@ -20,4 +22,5 @@ public interface CeoService {
 
 	CeoRemoveRes removeUser(Long id, HttpServletResponse response) throws IOException;
 
+	CeoJoinRes join(CeoJoinReq ceoJoinReq);
 }

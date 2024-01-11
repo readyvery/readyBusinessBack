@@ -61,6 +61,7 @@ public class OAuthAttributes {
 			.phone(oauth2UserInfo.getPhoneNumber())
 			.nickName(oauth2UserInfo.getNickName())
 			.imageUrl(oauth2UserInfo.getImageUrl())
+			.password("readyvery12!")
 			.role(Role.USER)
 			.build();
 	}

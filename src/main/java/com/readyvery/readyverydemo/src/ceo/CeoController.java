@@ -4,12 +4,16 @@ import java.io.IOException;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
@@ -90,4 +94,11 @@ public class CeoController {
 		return ceoServiceImpl.removeUser(userDetails.getId(), response);
 	}
 
+	/**
+	 * 회원 가입
+	 */
+	@PostMapping("/user/join")
+	public CeoJoinRes join(@RequestBody CeoJoinReq ceoJoinReq) {
+		return ceoServiceImpl.join(ceoJoinReq);
+	}
 }

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +18,11 @@ import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
+import com.readyvery.readyverydemo.src.ceo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMapper;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
@@ -34,10 +38,8 @@ public class CeoServiceImpl implements CeoService {
 
 	private final CeoRepository ceoRepository;
 	private final CeoMapper ceoMapper;
-	@Value("${jwt.refresh.cookie}")
-	private String refreshCookie;
-	@Value("${service.app.admin.key}")
-	private String serviceAppAdminKey;
+	private final CeoApiConfig ceoApiConfig;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails) {
@@ -67,7 +69,7 @@ public class CeoServiceImpl implements CeoService {
 	@Override
 	public CeoRemoveRes removeUser(Long id, HttpServletResponse response) throws IOException {
 		CeoInfo user = getCeoInfo(id);
-		requestToServer("KakaoAK " + serviceAppAdminKey,
+		requestToServer("KakaoAK " + ceoApiConfig.getServiceAppAdminKey(),
 			"target_id_type=user_id&target_id=" + user.getSocialId());
 		user.updateRemoveCeoDate();
 		user.updateRefresh(null); // Refresh Token을 null 또는 빈 문자열로 업데이트
@@ -79,12 +81,31 @@ public class CeoServiceImpl implements CeoService {
 			.build();
 	}
 
+	@Override
+	public CeoJoinRes join(CeoJoinReq ceoJoinReq) {
+		CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
+		verifyCeoJoin(ceoInfo);
+		ceoInfo.encodePassword(passwordEncoder);
+		ceoRepository.save(ceoInfo);
+		return CeoJoinRes.builder()
+			.success(true)
+			.message("회원가입이 완료되었습니다.")
+			.build();
+	}
+
+	private void verifyCeoJoin(CeoInfo ceoInfo) {
+		if (ceoRepository.existsByEmail(ceoInfo.getEmail())) {
+			throw new BusinessLogicException(ExceptionCode.EMAIL_DUPLICATION);
+		}
+
+	}
+
 	/**
 	 * 로그아웃
 	 * @param response
 	 */
 	private void invalidateRefreshTokenCookie(HttpServletResponse response) {
-		Cookie refreshTokenCookie = new Cookie(refreshCookie, null); // 쿠키 이름을 동일하게 설정
+		Cookie refreshTokenCookie = new Cookie(ceoApiConfig.getRefreshCookie(), null); // 쿠키 이름을 동일하게 설정
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setPath("/api/v1/refresh/token"); // 기존과 동일한 경로 설정
 		refreshTokenCookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 즉시 만료
