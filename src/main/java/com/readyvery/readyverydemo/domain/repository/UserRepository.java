@@ -10,7 +10,7 @@ import com.readyvery.readyverydemo.domain.UserInfo;
 public interface UserRepository extends JpaRepository<UserInfo, Long> {
 	Optional<UserInfo> findByEmail(String email);
 
-	Optional<UserInfo> findByRefreshToken(String refreshToken);
+
 
 	/**
 	 * 소셜 타입과 소셜의 식별값으로 회원 찾는 메소드

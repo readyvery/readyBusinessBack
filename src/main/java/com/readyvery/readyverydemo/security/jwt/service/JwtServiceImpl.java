@@ -1,5 +1,7 @@
 package com.readyvery.readyverydemo.security.jwt.service;
 
+import static com.readyvery.readyverydemo.security.jwt.config.JwtConfig.*;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -76,8 +78,17 @@ public class JwtServiceImpl implements JwtService {
 	 */
 	@Override
 	public Optional<String> extractAccessToken(HttpServletRequest request) {
+		// "Authorization" 헤더를 확인합니다.
+		String authorizationHeader = request.getHeader(AUTHORIZATION);
+
+		// "Authorization" 헤더가 존재하면, 헤더에서 토큰을 추출합니다.
+		if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
+			return extractToken.extractTokenHeader(request, AUTHORIZATION);
+		}
+
+		// "Authorization" 헤더가 존재하지 않으면, 쿠키에서 토큰을 추출합니다.
 		return extractToken.extractTokenCookie(request, jwtConfig.getAccessTokenName());
-		//return extractToken.extractTokenHeader(request, jwtConfig.getAccessTokenName());
+
 	}
 
 	/**

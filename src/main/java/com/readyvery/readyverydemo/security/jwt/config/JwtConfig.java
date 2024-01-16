@@ -26,6 +26,7 @@ public class JwtConfig {
 	public static final String EMAIL_CLAIM = "email";
 	public static final String USER_NUMBER = "userNumber";
 	public static final String BEARER = "Bearer ";
+	public static final String AUTHORIZATION = "Authorization";
 
 	@Value("${jwt.secretKey}")
 	public void setSecretKey(String secretKey) {

@@ -95,7 +95,7 @@ public class SpringSecurityConfig {
 		http.addFilterAfter(customJsonCeonamePasswordAuthenticationFilter(), LogoutFilter.class);
 		http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonCeonamePasswordAuthenticationFilter.class);
 
-		// http.addFilterBefore(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
+		// http.addFilterBefore(jwtAuthenticationProcessingFilter(), LogoutFilter.class);as
 		return http.build();
 	}
 
