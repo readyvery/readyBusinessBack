@@ -79,8 +79,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 */
 	public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
 
-		refreshTokenRepository.findIdByRefreshToken(refreshToken)
-			.flatMap(ceoRepository::findByEmail)
+		refreshTokenRepository.findByRefreshToken(refreshToken)
+			.map(RefreshToken::getId) // RefreshToken 객체에서 ID를 추출합니다.
+			.flatMap(ceoRepository::findByEmail) // 추출된 ID를 이용하여 CEO를 조회합니다.
 			.ifPresent(user -> {
 				String reIssuedRefreshToken = reIssueRefreshToken(user);
 				jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
@@ -93,14 +94,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 * jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후
 	 * DB에 재발급한 리프레시 토큰 업데이트 후 Flush
 	 */
+	// private String reIssueRefreshToken(CeoInfo ceoInfo) {
+	// 	String reIssuedRefreshToken = jwtService.createRefreshToken();
+	// 	ceoInfo.updateRefresh(reIssuedRefreshToken);
+	// 	ceoRepository.saveAndFlush(ceoInfo);
+	// 	return reIssuedRefreshToken;
+	// }
 	private String reIssueRefreshToken(CeoInfo ceoInfo) {
-		String reIssuedRefreshToken = jwtService.createRefreshToken();
-		ceoInfo.updateRefresh(reIssuedRefreshToken);
-		ceoRepository.saveAndFlush(ceoInfo);
-		return reIssuedRefreshToken;
-	}
-
-	private String reIssueRefreshToken1(CeoInfo ceoInfo) {
 		String reIssuedRefreshToken = jwtService.createRefreshToken();
 
 		RefreshToken refreshToken = refreshTokenRepository.findById(ceoInfo.getEmail())

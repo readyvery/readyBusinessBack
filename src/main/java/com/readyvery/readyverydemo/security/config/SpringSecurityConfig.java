@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.customlogin.filter.CustomJsonCeonamePasswordAuthenticationFilter;
 import com.readyvery.readyverydemo.security.customlogin.handler.LoginFailureHandler;
 import com.readyvery.readyverydemo.security.customlogin.handler.LoginSuccessHandler;
@@ -48,6 +49,7 @@ public class SpringSecurityConfig {
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 	private final CustomOAuth2UserService customOAuth2UserService;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -119,7 +121,7 @@ public class SpringSecurityConfig {
 
 	@Bean
 	public LoginSuccessHandler loginSuccessHandler() {
-		return new LoginSuccessHandler(jwtService, ceoRepository);
+		return new LoginSuccessHandler(jwtService, refreshTokenRepository);
 	}
 
 	@Bean
@@ -160,7 +162,7 @@ public class SpringSecurityConfig {
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
 		JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService,
-			ceoRepository);
+			ceoRepository, refreshTokenRepository);
 		return jwtAuthenticationFilter;
 	}
 }

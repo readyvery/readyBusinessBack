@@ -10,5 +10,6 @@ import com.readyvery.readyverydemo.redis.dao.RefreshToken;
 @Repository
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
 
-	Optional<String> findIdByRefreshToken(String refreshToken);
+	Optional<RefreshToken> findByRefreshToken(String refreshToken);
+
 }
