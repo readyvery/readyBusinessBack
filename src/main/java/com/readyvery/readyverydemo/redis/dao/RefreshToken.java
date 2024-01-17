@@ -2,7 +2,6 @@ package com.readyvery.readyverydemo.redis.dao;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +18,11 @@ public class RefreshToken {
 
 	private String refreshToken;
 
-	@Indexed
-	private String accessToken;
+	// @Indexed
+	// private String accessToken;
+
+	public void update(String refreshToken) {
+		this.refreshToken = refreshToken;
+
+	}
 }

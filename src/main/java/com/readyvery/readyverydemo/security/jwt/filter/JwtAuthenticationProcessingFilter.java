@@ -13,6 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.redis.dao.RefreshToken;
+import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
 
@@ -31,6 +33,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final CeoRepository ceoRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -75,7 +78,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 *  그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
 	 */
 	public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-		ceoRepository.findByRefreshToken(refreshToken)
+
+		refreshTokenRepository.findIdByRefreshToken(refreshToken)
+			.flatMap(ceoRepository::findByEmail)
 			.ifPresent(user -> {
 				String reIssuedRefreshToken = reIssueRefreshToken(user);
 				jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
@@ -92,6 +97,27 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		String reIssuedRefreshToken = jwtService.createRefreshToken();
 		ceoInfo.updateRefresh(reIssuedRefreshToken);
 		ceoRepository.saveAndFlush(ceoInfo);
+		return reIssuedRefreshToken;
+	}
+
+	private String reIssueRefreshToken1(CeoInfo ceoInfo) {
+		String reIssuedRefreshToken = jwtService.createRefreshToken();
+
+		RefreshToken refreshToken = refreshTokenRepository.findById(ceoInfo.getEmail())
+			.map(token -> {
+				// 이미 존재하는 토큰이 있으면, 새로 발급받은 리프레시 토큰으로 업데이트
+				token.update(reIssuedRefreshToken);
+				return token;
+			})
+			.orElseGet(() -> {
+				// 새로운 토큰 생성
+				return RefreshToken.builder()
+					.id(ceoInfo.getEmail())
+					.refreshToken(reIssuedRefreshToken)
+					.build();
+			});
+
+		refreshTokenRepository.save(refreshToken);
 		return reIssuedRefreshToken;
 	}
 

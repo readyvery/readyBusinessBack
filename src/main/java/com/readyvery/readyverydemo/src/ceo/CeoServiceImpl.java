@@ -119,7 +119,7 @@ public class CeoServiceImpl implements CeoService {
 	}
 
 	private void removeRefreshTokenInRedis(CustomUserDetails userDetails) {
-		RefreshToken refreshToken = refreshTokenRepository.findByAccessToken(userDetails.getAccessToken())
+		RefreshToken refreshToken = refreshTokenRepository.findById(userDetails.getEmail())
 			.orElseThrow(() -> new UsernameNotFoundException("해당 이메일이 존재하지 않습니다."));
 		refreshTokenRepository.delete(refreshToken);
 	}

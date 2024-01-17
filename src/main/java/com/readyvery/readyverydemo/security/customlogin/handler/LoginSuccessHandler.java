@@ -30,7 +30,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 
 		RefreshToken token = RefreshToken.builder()
-			.accessToken(accessToken)
+			.id(email)
 			.refreshToken(refreshToken)
 			.build();
 		refreshTokenRepository.save(token);
