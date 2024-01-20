@@ -126,7 +126,7 @@ public class CeoServiceImpl implements CeoService {
 
 	private void verifyUserDetails(CustomUserDetails userDetails) {
 		if (userDetails == null) {
-			throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+			throw new BusinessLogicException(ExceptionCode.AUTH_ERROR);
 		}
 	}
 

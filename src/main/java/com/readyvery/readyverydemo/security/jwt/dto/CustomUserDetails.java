@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.readyvery.readyverydemo.domain.Role;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,6 +18,7 @@ public class CustomUserDetails implements UserDetails {
 	private String email;
 	private String password;
 	private String accessToken;
+	private Role role;
 	private Collection<? extends GrantedAuthority> authorities;
 
 	@Override
