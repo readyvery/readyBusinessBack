@@ -1,4 +1,4 @@
-package com.readyvery.readyverydemo.src.order.config;
+package com.readyvery.readyverydemo.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
