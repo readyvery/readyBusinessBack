@@ -13,14 +13,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.readyvery.readyverydemo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.domain.CeoInfo;
+import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
 import com.readyvery.readyverydemo.redis.dao.RefreshToken;
 import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
-import com.readyvery.readyverydemo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
@@ -112,10 +113,25 @@ public class CeoServiceImpl implements CeoService {
 		response.addCookie(refreshTokenCookie);
 	}
 
-	private CeoInfo getCeoInfo(Long id) {
+	@Override
+	public CeoInfo getCeoInfo(Long id) {
 		return ceoRepository.findById(id).orElseThrow(
 			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
 		);
+	}
+
+	@Override
+	public void changeRoleAndSave(Long userId, Role role) {
+		CeoInfo ceoInfo = getCeoInfo(userId);
+		ceoInfo.changeRole(role);
+		ceoRepository.save(ceoInfo);
+	}
+
+	@Override
+	public void insertPhoneNum(Long userId, String phoneNum) {
+		CeoInfo ceoInfo = getCeoInfo(userId);
+		ceoInfo.insertPhoneNumber(phoneNum);
+		ceoRepository.save(ceoInfo);
 	}
 
 	private void removeRefreshTokenInRedis(CustomUserDetails userDetails) {

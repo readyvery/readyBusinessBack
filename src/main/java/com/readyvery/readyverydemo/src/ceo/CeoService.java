@@ -2,6 +2,8 @@ package com.readyvery.readyverydemo.src.ceo;
 
 import java.io.IOException;
 
+import com.readyvery.readyverydemo.domain.CeoInfo;
+import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
@@ -23,4 +25,10 @@ public interface CeoService {
 	CeoRemoveRes removeUser(CustomUserDetails userDetails, HttpServletResponse response) throws IOException;
 
 	CeoJoinRes join(CeoJoinReq ceoJoinReq);
+
+	CeoInfo getCeoInfo(Long id);
+
+	void changeRoleAndSave(Long userId, Role role);
+
+	void insertPhoneNum(Long userId, String phoneNum);
 }
