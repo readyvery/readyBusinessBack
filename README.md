@@ -1,21 +1,20 @@
 <h1 align="center">Welcome to Readyvery-Business-WEB 👋</h1>
 
-> ParKING BACK-End WEB Project
+> Readyvery-Business BACK-End WEB Project
 
 <div align=center>
-  <img width="200" alt="123" src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsTaJl%2FbtsrrSgwmfB%2FSXe0UCIJ8qg6lEIDKqdGL0%2Fimg.png">
+  <img width="200" alt="123" src="https://github.com/readyvery/readyBusinessBack/assets/78861124/faffab7b-d0ef-49b9-a92a-ddff5922879b">
 </div>
-<h2 align=center>내 주차장의 현황을 알려주는 서비스, ParKING</h2>
+<h2 align=center>☕ [점주사이드] 간편 선결제 테이크아웃 서비스, 레디베리 🥤</h2>
 <div align=center>
-  <img alt="123" src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbEvnDt%2FbtsBCZE8g9F%2FxuV4nezJEi5cYpOnTlK4n0%2Fimg.png">
+  <img alt="123" src="https://github.com/readyvery/readyBusinessBack/assets/78861124/5487eaa8-6e6a-4f9b-9ffb-92a6ac8eed60">
 </div>
 
 
 
 ## API Docs
 
-### 💎 [ParKING BACK-End WEB API DOCs](https://parking.marinesnow34.com/swagger-ui/index.html#/)
-- [Swagger](https://parking.marinesnow34.com/swagger-ui/index.html#/)
+### 💎 [Readyvery-Business BACK-End WEB API DOCs Swagger](https://readyvery.com/swagger-ui/index.html#/)
 
 
 ## 기술스택
@@ -36,12 +35,13 @@
   - JPA
 ## ERD
 
-![CAT-Shield](https://github.com/B4CK-BONE/ParkingBackend/assets/50243183/23b8db04-07fe-431d-8ed8-4a4a10de7207)
+![Readyvery Service](https://github.com/readyvery/readyBusinessBack/assets/78861124/32e8218a-f8ec-49f4-a689-77dd6d6578bc)
+
 ## Usage
 
 Build
 ```sh
-./gradlew clean build --key=cat-shiled
+./gradlew clean build
 ```
 
 Start
@@ -54,6 +54,7 @@ java -jar soft-0.0.1-SNAPSHOT.jar
 
 👤 **1223v**
 * Github: [@1223v](https://github.com/1223v)
+  
 👤 **marinesnow34**
 * Github: [@marinesnow34](https://github.com/marinesnow34)
 
