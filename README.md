@@ -29,7 +29,7 @@
 
 - Backend
   - Java 17
-  - Spring-Boot 3.0.9
+  - Spring-Boot 3.1.5
   - gradle
   - mysql
   - JPA
@@ -49,6 +49,10 @@ Start
 java -jar soft-0.0.1-SNAPSHOT.jar
 ```
 
+## 개발 일지
+
+- 백엔드 프로젝트 생성(• SpringBoot v3.1.5 , • Java v17 ) (23/10/13) - `commit` : 6be3eb9
+- 
 
 ## Author
 
