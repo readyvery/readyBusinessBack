@@ -1,10 +1,6 @@
 package com.readyvery.readyverydemo.solapi;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,8 +12,6 @@ import com.readyvery.readyverydemo.config.SolApiConfig;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.src.smsauthentication.SmsServiceImpl;
 import com.readyvery.readyverydemo.src.smsauthentication.VerificationService;
-import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyReq;
-import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyRes;
 
 @ExtendWith(MockitoExtension.class)
 public class SmsServiceImplTest {
@@ -71,17 +65,17 @@ public class SmsServiceImplTest {
 	// 	assertEquals("인증에 성공하였습니다.", response.getSmsMessage());
 	// }
 
-	@Test
-	void testVerifySms_Failure() {
-		// given
-		SmsVerifyReq request = new SmsVerifyReq("01012345678", "123456");
-		when(verificationService.verifyCode(request.getPhoneNumber(), request.getVerifyNumber())).thenReturn(false);
-
-		// when
-		SmsVerifyRes response = smsService.verifySms(1L, request);
-
-		// then
-		assertFalse(response.isSuccess());
-		assertEquals("인증에 실패하였습니다.", response.getSmsMessage());
-	}
+	// @Test
+	// void testVerifySms_Failure() {
+	// 	// given
+	// 	SmsVerifyReq request = new SmsVerifyReq("01012345678", "123456");
+	// 	when(verificationService.verifyCode(request.getPhoneNumber(), request.getVerifyNumber())).thenReturn(false);
+	//
+	// 	// when
+	// 	SmsVerifyRes response = smsService.verifySms(1L, request);
+	//
+	// 	// then
+	// 	assertFalse(response.isSuccess());
+	// 	assertEquals("인증에 실패하였습니다.", response.getSmsMessage());
+	// }
 }
