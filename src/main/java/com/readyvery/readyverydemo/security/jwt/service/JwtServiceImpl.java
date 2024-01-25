@@ -80,7 +80,7 @@ public class JwtServiceImpl implements JwtService {
 	public Optional<String> extractAccessToken(HttpServletRequest request) {
 		// "Authorization" 헤더를 확인합니다.
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
-
+		System.out.println("authorizationHeader = " + authorizationHeader);
 		// "Authorization" 헤더가 존재하면, 헤더에서 토큰을 추출합니다.
 		if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
 			return extractToken.extractTokenHeader(request, AUTHORIZATION);
