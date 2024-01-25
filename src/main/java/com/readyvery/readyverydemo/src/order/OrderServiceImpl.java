@@ -23,6 +23,8 @@ import net.nurigo.sdk.message.model.KakaoOption;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
+import com.readyvery.readyverydemo.config.SolApiConfig;
+import com.readyvery.readyverydemo.config.TossPaymentConfig;
 import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.Order;
 import com.readyvery.readyverydemo.domain.Progress;
@@ -30,8 +32,6 @@ import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.domain.repository.OrderRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
-import com.readyvery.readyverydemo.src.order.config.SolApiConfig;
-import com.readyvery.readyverydemo.src.order.config.TossPaymentConfig;
 import com.readyvery.readyverydemo.src.order.dto.OrderMapper;
 import com.readyvery.readyverydemo.src.order.dto.OrderRegisterRes;
 import com.readyvery.readyverydemo.src.order.dto.OrderStatusRes;

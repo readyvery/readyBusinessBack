@@ -1,11 +1,17 @@
-package com.readyvery.readyverydemo.src.order.config;
+package com.readyvery.readyverydemo.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 @Configuration
 public class SolApiConfig {
 	public static final String SOLAPI_URL = "https://api.solapi.com";
@@ -27,4 +33,12 @@ public class SolApiConfig {
 
 	@Value("${solapi.kakao.pfid}")
 	private String kakaoPfid;
+
+	@Value("${solapi.phone_number}")
+	private String phoneNumber;
+
+	@Bean
+	public DefaultMessageService defaultMessageService() {
+		return NurigoApp.INSTANCE.initialize(apiKey, apiSecret, SOLAPI_URL);
+	}
 }

@@ -8,17 +8,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.readyvery.readyverydemo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.domain.CeoInfo;
+import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
+import com.readyvery.readyverydemo.redis.dao.RefreshToken;
+import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
-import com.readyvery.readyverydemo.src.ceo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
@@ -40,6 +43,7 @@ public class CeoServiceImpl implements CeoService {
 	private final CeoMapper ceoMapper;
 	private final CeoApiConfig ceoApiConfig;
 	private final PasswordEncoder passwordEncoder;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Override
 	public CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails) {
@@ -55,11 +59,10 @@ public class CeoServiceImpl implements CeoService {
 	}
 
 	@Override
-	public CeoLogoutRes removeRefreshTokenInDB(Long id, HttpServletResponse response) {
-		CeoInfo user = getCeoInfo(id);
-		user.updateRefresh(null); // Refresh Token을 null 또는 빈 문자열로 업데이트
-		ceoRepository.save(user);
+	public CeoLogoutRes removeRefreshTokenInDB(CustomUserDetails userDetails, HttpServletResponse response) {
+
 		invalidateRefreshTokenCookie(response); // 쿠키 무효화
+		removeRefreshTokenInRedis(userDetails); // Redis에서 Refresh Token 삭제
 		return CeoLogoutRes.builder()
 			.success(true)
 			.message("로그아웃 성공")
@@ -67,13 +70,11 @@ public class CeoServiceImpl implements CeoService {
 	}
 
 	@Override
-	public CeoRemoveRes removeUser(Long id, HttpServletResponse response) throws IOException {
-		CeoInfo user = getCeoInfo(id);
+	public CeoRemoveRes removeUser(CustomUserDetails userDetails, HttpServletResponse response) throws IOException {
+		CeoInfo user = getCeoInfo(userDetails.getId());
 		requestToServer("KakaoAK " + ceoApiConfig.getServiceAppAdminKey(),
 			"target_id_type=user_id&target_id=" + user.getSocialId());
-		user.updateRemoveCeoDate();
-		user.updateRefresh(null); // Refresh Token을 null 또는 빈 문자열로 업데이트
-		ceoRepository.save(user);
+		removeRefreshTokenInRedis(userDetails); // Redis에서 Refresh Token 삭제
 		invalidateRefreshTokenCookie(response); // 쿠키 무효화
 		return CeoRemoveRes.builder()
 			.message("회원 탈퇴가 완료되었습니다.")
@@ -110,18 +111,38 @@ public class CeoServiceImpl implements CeoService {
 		refreshTokenCookie.setPath("/api/v1/refresh/token"); // 기존과 동일한 경로 설정
 		refreshTokenCookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 즉시 만료
 		response.addCookie(refreshTokenCookie);
-
 	}
 
-	private CeoInfo getCeoInfo(Long id) {
+	@Override
+	public CeoInfo getCeoInfo(Long id) {
 		return ceoRepository.findById(id).orElseThrow(
 			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
 		);
 	}
 
+	@Override
+	public void changeRoleAndSave(Long userId, Role role) {
+		CeoInfo ceoInfo = getCeoInfo(userId);
+		ceoInfo.changeRole(role);
+		ceoRepository.save(ceoInfo);
+	}
+
+	@Override
+	public void insertPhoneNum(Long userId, String phoneNum) {
+		CeoInfo ceoInfo = getCeoInfo(userId);
+		ceoInfo.insertPhoneNumber(phoneNum);
+		ceoRepository.save(ceoInfo);
+	}
+
+	private void removeRefreshTokenInRedis(CustomUserDetails userDetails) {
+		RefreshToken refreshToken = refreshTokenRepository.findById(userDetails.getEmail())
+			.orElseThrow(() -> new UsernameNotFoundException("해당 이메일이 존재하지 않습니다."));
+		refreshTokenRepository.delete(refreshToken);
+	}
+
 	private void verifyUserDetails(CustomUserDetails userDetails) {
 		if (userDetails == null) {
-			throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+			throw new BusinessLogicException(ExceptionCode.AUTH_ERROR);
 		}
 	}
 

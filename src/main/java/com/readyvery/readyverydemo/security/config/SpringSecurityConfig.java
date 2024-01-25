@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.customlogin.filter.CustomJsonCeonamePasswordAuthenticationFilter;
 import com.readyvery.readyverydemo.security.customlogin.handler.LoginFailureHandler;
 import com.readyvery.readyverydemo.security.customlogin.handler.LoginSuccessHandler;
@@ -48,6 +49,7 @@ public class SpringSecurityConfig {
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 	private final CustomOAuth2UserService customOAuth2UserService;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -71,7 +73,8 @@ public class SpringSecurityConfig {
 					"/api/v1/jwt-test",
 					"/oauth2/**",
 					"/login",
-					"/api/v1/auth"
+					"/api/v1/auth",
+					"/api/v1/sms/**"
 				).permitAll() // 해당 요청은 모두 허용
 				.anyRequest().authenticated() // 위를 제외한 나머지는 모두 인증이 필요
 			)
@@ -95,7 +98,7 @@ public class SpringSecurityConfig {
 		http.addFilterAfter(customJsonCeonamePasswordAuthenticationFilter(), LogoutFilter.class);
 		http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonCeonamePasswordAuthenticationFilter.class);
 
-		// http.addFilterBefore(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
+		// http.addFilterBefore(jwtAuthenticationProcessingFilter(), LogoutFilter.class);as
 		return http.build();
 	}
 
@@ -119,7 +122,7 @@ public class SpringSecurityConfig {
 
 	@Bean
 	public LoginSuccessHandler loginSuccessHandler() {
-		return new LoginSuccessHandler(jwtService, ceoRepository);
+		return new LoginSuccessHandler(jwtService, refreshTokenRepository);
 	}
 
 	@Bean
@@ -160,7 +163,7 @@ public class SpringSecurityConfig {
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
 		JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService,
-			ceoRepository);
+			ceoRepository, refreshTokenRepository);
 		return jwtAuthenticationFilter;
 	}
 }

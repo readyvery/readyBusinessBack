@@ -68,7 +68,7 @@ public class CeoController {
 	@GetMapping("/user/logout")
 	public CeoLogoutRes logout(@AuthenticationPrincipal CustomUserDetails userDetails, HttpServletResponse response) {
 
-		return ceoServiceImpl.removeRefreshTokenInDB(userDetails.getId(), response);
+		return ceoServiceImpl.removeRefreshTokenInDB(userDetails, response);
 
 	}
 
@@ -91,7 +91,7 @@ public class CeoController {
 	@GetMapping("/user/remove")
 	public CeoRemoveRes remove(@AuthenticationPrincipal CustomUserDetails userDetails,
 		HttpServletResponse response) throws IOException {
-		return ceoServiceImpl.removeUser(userDetails.getId(), response);
+		return ceoServiceImpl.removeUser(userDetails, response);
 	}
 
 	/**

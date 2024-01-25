@@ -26,8 +26,8 @@ public class ExtractToken {
 
 	public Optional<String> extractTokenHeader(HttpServletRequest request, String tokenName) {
 		return Optional.ofNullable(request.getHeader(tokenName))
-			.filter(refreshToken -> refreshToken.startsWith(BEARER))
-			.map(refreshToken -> refreshToken.replace(BEARER, ""));
+			.filter(verifyToken -> verifyToken.startsWith(BEARER))
+			.map(verifyToken -> verifyToken.replace(BEARER, ""));
 	}
 
 }
