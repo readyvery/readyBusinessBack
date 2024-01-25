@@ -10,6 +10,8 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 
 import com.readyvery.readyverydemo.config.SolApiConfig;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.src.ceo.CeoService;
+import com.readyvery.readyverydemo.src.smsauthentication.MessageSendingService;
 import com.readyvery.readyverydemo.src.smsauthentication.SmsServiceImpl;
 import com.readyvery.readyverydemo.src.smsauthentication.VerificationService;
 
@@ -28,8 +30,14 @@ public class SmsServiceImplTest {
 	@Mock
 	private VerificationService verificationService;
 
+	@Mock
+	private CeoService ceoServiceImpl;
+
 	@InjectMocks
 	private SmsServiceImpl smsService;
+
+	@Mock
+	private MessageSendingService messageSendingService; // MessageSendingService에 대한 모킹 추가
 
 	@BeforeEach
 	void setUp() {
@@ -42,6 +50,9 @@ public class SmsServiceImplTest {
 	// 	SmsSendReq request = new SmsSendReq("01064393547");
 	// 	when(solApiConfig.getPhoneNumber()).thenReturn("01064393547");
 	// 	when(verificationService.createVerificationCode(anyString())).thenReturn("123456");
+	// 	when(messageSendingService.sendMessage(request.getPhoneNumber(), solApiConfig.getPhoneNumber(),
+	// 		"[Readyvery] 아래의 인증번호를 입력해주세요.\n인증번호 : 123456")).thenReturn(
+	// 		true); // sendMessage의 결과를 모킹
 	//
 	// 	// when
 	// 	SmsSendRes response = smsService.sendSms(1L, request);
@@ -64,7 +75,7 @@ public class SmsServiceImplTest {
 	// 	assertTrue(response.isSuccess());
 	// 	assertEquals("인증에 성공하였습니다.", response.getSmsMessage());
 	// }
-
+	//
 	// @Test
 	// void testVerifySms_Failure() {
 	// 	// given
