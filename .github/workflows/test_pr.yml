@@ -24,6 +24,17 @@ jobs:
     steps:
       - name: Checkout source code.   # Repo checkout
         uses: actions/checkout@v3
+      - name: Connect to Redis
+        # Runs a script that creates a Redis client, populates
+        # the client with data, and retrieves data
+        run: node client.js
+        # Environment variable used by the `client.js` script to create
+        # a new Redis client.
+        env:
+          # The hostname used to communicate with the Redis service container
+          REDIS_HOST: localhost
+          # The default Redis port
+          REDIS_PORT: 6379
 
       - name: Set application.properties from secrets
         run: |
