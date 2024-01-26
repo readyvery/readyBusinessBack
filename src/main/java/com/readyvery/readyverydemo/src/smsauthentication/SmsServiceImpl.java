@@ -4,12 +4,15 @@ import org.springframework.stereotype.Service;
 
 import com.readyvery.readyverydemo.config.SolApiConfig;
 import com.readyvery.readyverydemo.domain.Role;
+import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
+import com.readyvery.readyverydemo.global.exception.ExceptionCode;
 import com.readyvery.readyverydemo.src.ceo.CeoService;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendReq;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendRes;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyReq;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyRes;
 
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +29,9 @@ public class SmsServiceImpl implements SmsService {
 	@Override
 	public SmsSendRes sendSms(Long userId, SmsSendReq smsSendReq) {
 		// Message 패키지가 중복될 경우 net.nurigo.sdk.message.model.Message로 치환하여 주세요
+		if (StringUtils.isEmpty(smsSendReq.getPhoneNumber())) {
+			throw new BusinessLogicException(ExceptionCode.INVALID_INPUT);
+		}
 
 		String code = verificationService.createVerificationCode(smsSendReq.getPhoneNumber());
 
