@@ -14,7 +14,7 @@
 
 ## API Docs
 
-### 💎 [Readyvery-Business BACK-End WEB API DOCs Swagger](https://readyvery.com/swagger-ui/index.html#/)
+### 💎 [Readyvery-Business BACK-End WEB API DOCs Swagger](https://boss.readyvery.com/api/swagger-ui/index.html#/)
 
 
 ## 기술스택
