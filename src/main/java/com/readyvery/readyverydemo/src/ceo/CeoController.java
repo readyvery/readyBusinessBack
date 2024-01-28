@@ -27,7 +27,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 public class CeoController {
 
 	private final CeoService ceoServiceImpl;
