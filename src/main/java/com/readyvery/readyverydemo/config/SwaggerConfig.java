@@ -1,5 +1,6 @@
 package com.readyvery.readyverydemo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 
 @OpenAPIDefinition(
 	info = @Info(
@@ -27,6 +29,10 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 )
 @Configuration
 public class SwaggerConfig {
+
+	@Value("${production.server.url}")
+	private String serverUrl;
+
 	@Bean
 	public OpenAPI customOpenApi() {
 
@@ -61,6 +67,7 @@ public class SwaggerConfig {
 		// return openAPI;
 
 		return new OpenAPI()
+			.addServersItem(new Server().url(serverUrl).description("Production server"))
 			.addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
 			.components(new Components()
 				.addSecuritySchemes("bearerAuth", new SecurityScheme()
@@ -70,7 +77,7 @@ public class SwaggerConfig {
 					.in(SecurityScheme.In.HEADER)
 					.name("Authorization")))
 
-			.path("/api/v1/user/login", new PathItem()
+			.path("/v1/user/login", new PathItem()
 				.post(new Operation()
 						.operationId("loginUser")
 						.summary("자체 로그인")

@@ -11,15 +11,14 @@ import lombok.Getter;
 @Getter
 public class JwtConfig {
 
-	private String secretKey;
-	private Long accessTokenExpirationPeriod;
-	private Long refreshTokenExpirationPeriod;
-	private Algorithm algorithm;
-
-	private String accessTokenName;
-	private String refreshTokenName;
-	private String frontendUrl;
-	private String cookieDomain;
+	private final String secretKey;
+	private final Long accessTokenExpirationPeriod;
+	private final Long refreshTokenExpirationPeriod;
+	private final String accessTokenName;
+	private final String refreshTokenName;
+	private final String frontendUrl;
+	private final String cookieDomain;
+	private final Algorithm algorithm;
 
 	public static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
 	public static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
@@ -28,45 +27,29 @@ public class JwtConfig {
 	public static final String BEARER = "Bearer ";
 	public static final String AUTHORIZATION = "Authorization";
 
-	@Value("${jwt.secretKey}")
-	public void setSecretKey(String secretKey) {
+	public JwtConfig(
+		@Value("${jwt.secretKey}") String secretKey,
+		@Value("${jwt.access.expiration}") Long accessTokenExpirationPeriod,
+		@Value("${jwt.refresh.expiration}") Long refreshTokenExpirationPeriod,
+		@Value("${jwt.access.cookie}") String accessTokenName,
+		@Value("${jwt.refresh.cookie}") String refreshTokenName,
+		@Value("${jwt.redirect-uri}") String frontendUrl,
+		@Value("${jwt.refresh.cookie.domain}") String cookieDomain
+	) {
 		this.secretKey = secretKey;
-		initializeAlgorithm();
-	}
-
-	@Value("${jwt.access.expiration}")
-	public void setAccessTokenExpirationPeriod(Long accessTokenExpirationPeriod) {
 		this.accessTokenExpirationPeriod = accessTokenExpirationPeriod;
-	}
-
-	@Value("${jwt.refresh.expiration}")
-	public void setRefreshTokenExpirationPeriod(Long refreshTokenExpirationPeriod) {
 		this.refreshTokenExpirationPeriod = refreshTokenExpirationPeriod;
-	}
-
-	@Value("${jwt.access.cookie}")
-	public void setAccessTokenName(String accessTokenName) {
 		this.accessTokenName = accessTokenName;
-	}
-
-	@Value("${jwt.refresh.cookie}")
-	public void setRefreshTokenName(String refreshTokenName) {
 		this.refreshTokenName = refreshTokenName;
-	}
-
-	@Value("${jwt.redirect-uri}")
-	public void setFrontendUrl(String frontendUrl) {
 		this.frontendUrl = frontendUrl;
-	}
-
-	@Value("${jwt.refresh.cookie.domain}")
-	public void setCookieDomain(String cookieDomain) {
 		this.cookieDomain = cookieDomain;
+		this.algorithm = initializeAlgorithm(secretKey);
 	}
 
-	private void initializeAlgorithm() {
-		if (secretKey != null && !secretKey.isEmpty()) {
-			algorithm = Algorithm.HMAC512(secretKey);
+	private Algorithm initializeAlgorithm(String secretKey) {
+		if (secretKey == null || secretKey.trim().isEmpty()) {
+			throw new IllegalArgumentException("Secret key must not be null or empty");
 		}
+		return Algorithm.HMAC512(secretKey);
 	}
 }
