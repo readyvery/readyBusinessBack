@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 public class InventoryController {
 
 	private final InventoryService inventoryServiceImpl;

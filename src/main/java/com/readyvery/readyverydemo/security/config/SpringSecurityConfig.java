@@ -66,18 +66,18 @@ public class SpringSecurityConfig {
 			// [PART 2]
 			//== URL별 권한 관리 옵션 ==//
 			.authorizeHttpRequests((authz) -> authz
-				.requestMatchers("/api/v1/user/join",
-					"/api/v1/user/login"
+				.requestMatchers("/v1/user/join",
+					"/v1/user/login"
 				).anonymous() // 로그인되지 않은 사용자만 접근 가능
 				.requestMatchers(
-					"/api/v1/jwt-test",
+					"/v1/jwt-test",
 					"/oauth2/**",
 					"/login",
-					"/api/v1/auth",
-					"/api/v1/sms/**"
+					"/v1/auth",
+					"/v1/sms/**"
 				).permitAll() // 해당 요청은 모두 허용
 
-				.requestMatchers("/swagger-ui/**", "/api/v1/api-docs/**", "/v3/api-docs/**",
+				.requestMatchers("/swagger-ui/**", "/v1/api-docs/**", "/v3/api-docs/**",
 					"/swagger-resources/**",
 					"/webjars/**").permitAll()
 				.anyRequest().authenticated() // 위를 제외한 나머지는 모두 인증이 필요
