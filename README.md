@@ -21,6 +21,20 @@
   <img alt="123" src="https://github.com/readyvery/readyBusinessBack/assets/78861124/5487eaa8-6e6a-4f9b-9ffb-92a6ac8eed60">
 </div>
 
+## 예시
+<div align=center>
+	
+<유저>
+
+![ready](https://github.com/readyvery/readyBack/assets/50243183/80bfa4f3-2cff-4456-94d9-d97f00673143)
+
+
+<점주>
+
+![ready_boss](https://github.com/readyvery/readyBack/assets/50243183/bba5001d-1be6-4dbb-b055-f6ef83f0a3fa)
+
+</div>
+
 
 
 ## API Docs
