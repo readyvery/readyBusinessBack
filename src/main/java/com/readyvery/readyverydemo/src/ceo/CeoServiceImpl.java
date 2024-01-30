@@ -23,6 +23,8 @@ import com.readyvery.readyverydemo.redis.dao.RefreshToken;
 import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
@@ -132,6 +134,26 @@ public class CeoServiceImpl implements CeoService {
 		CeoInfo ceoInfo = getCeoInfo(userId);
 		ceoInfo.insertPhoneNumber(phoneNum);
 		ceoRepository.save(ceoInfo);
+	}
+
+	@Override
+	public CeoDuplicateCheckRes emailDuplicateCheck(CeoDuplicateCheckReq ceoDuplicateCheckReq) {
+
+		if (ceoDuplicateCheckReq.getEmail() == null || ceoDuplicateCheckReq.getEmail().isEmpty()) {
+			return CeoDuplicateCheckRes.builder()
+				.success(false)
+				.message("이메일을 입력해주세요.")
+				.build();
+		} else if (ceoRepository.existsByEmail(ceoDuplicateCheckReq.getEmail())) {
+			return CeoDuplicateCheckRes.builder()
+				.success(false)
+				.message("이미 존재하는 이메일입니다.")
+				.build();
+		}
+		return CeoDuplicateCheckRes.builder()
+			.success(true)
+			.message("사용 가능한 이메일입니다.")
+			.build();
 	}
 
 	private void removeRefreshTokenInRedis(CustomUserDetails userDetails) {

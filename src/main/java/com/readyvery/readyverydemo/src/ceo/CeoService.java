@@ -6,6 +6,8 @@ import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
@@ -31,4 +33,7 @@ public interface CeoService {
 	void changeRoleAndSave(Long userId, Role role);
 
 	void insertPhoneNum(Long userId, String phoneNum);
+
+	CeoDuplicateCheckRes emailDuplicateCheck(CeoDuplicateCheckReq ceoDuplicateCheckReq);
+
 }
