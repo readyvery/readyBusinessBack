@@ -32,8 +32,6 @@ public interface CeoService {
 
 	void changeRoleAndSave(Long userId, Role role);
 
-	void insertPhoneNum(Long userId, String phoneNum);
-
 	CeoDuplicateCheckRes emailDuplicateCheck(CeoDuplicateCheckReq ceoDuplicateCheckReq);
 
 }

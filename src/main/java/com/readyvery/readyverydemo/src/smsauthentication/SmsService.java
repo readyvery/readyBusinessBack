@@ -7,7 +7,7 @@ import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyRes;
 
 public interface SmsService {
 
-	SmsSendRes sendSms(Long userId, SmsSendReq smsSendReq);
+	SmsSendRes sendSms(SmsSendReq smsSendReq);
 
-	SmsVerifyRes verifySms(Long userId, SmsVerifyReq smsVerifyReq);
+	SmsVerifyRes verifySms(SmsVerifyReq smsVerifyReq);
 }

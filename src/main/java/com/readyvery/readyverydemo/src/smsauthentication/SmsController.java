@@ -1,12 +1,10 @@
 package com.readyvery.readyverydemo.src.smsauthentication;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendReq;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendRes;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyReq;
@@ -29,9 +27,9 @@ public class SmsController {
 		@ApiResponse(responseCode = "200", description = "OK"),
 	})
 	@PostMapping("/sms/send")
-	public SmsSendRes sendSms(@AuthenticationPrincipal CustomUserDetails userDetails,
+	public SmsSendRes sendSms(
 		@RequestBody SmsSendReq smsSendReq) {
-		return smsServiceImpl.sendSms(userDetails.getId(), smsSendReq);
+		return smsServiceImpl.sendSms(smsSendReq);
 	}
 
 	@Operation(summary = "SMS 인증 번호 검증 기능", description = "SMS 인증 번호를 검증합니다.", tags = {"SMS 인증"})
@@ -39,9 +37,9 @@ public class SmsController {
 		@ApiResponse(responseCode = "200", description = "OK"),
 	})
 	@PostMapping("/sms/verify")
-	public SmsVerifyRes verifySms(@AuthenticationPrincipal CustomUserDetails userDetails,
+	public SmsVerifyRes verifySms(
 		@RequestBody SmsVerifyReq smsVerifyReq) {
-		return smsServiceImpl.verifySms(userDetails.getId(), smsVerifyReq);
+		return smsServiceImpl.verifySms(smsVerifyReq);
 	}
 
 }
