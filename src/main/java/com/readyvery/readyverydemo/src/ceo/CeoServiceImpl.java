@@ -31,6 +31,7 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMapper;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
+import com.readyvery.readyverydemo.src.smsauthentication.VerificationService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,6 +47,7 @@ public class CeoServiceImpl implements CeoService {
 	private final CeoApiConfig ceoApiConfig;
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final VerificationService verificationService;
 
 	@Override
 	public CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails) {
@@ -87,14 +89,22 @@ public class CeoServiceImpl implements CeoService {
 	@Override
 	public CeoJoinRes join(CeoJoinReq ceoJoinReq) {
 		if (ceoJoinReq.getPassword().equals(ceoJoinReq.getConfirmPassword())) {
-			CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
-			verifyCeoJoin(ceoInfo);
-			ceoInfo.encodePassword(passwordEncoder);
-			ceoRepository.save(ceoInfo);
-			return CeoJoinRes.builder()
-				.success(true)
-				.message("회원가입이 완료되었습니다.")
-				.build();
+			if (!verificationService.verifyNumber(ceoJoinReq.getPhone())) {
+				return CeoJoinRes.builder()
+					.success(false)
+					.message("인증되지 않은 전화번호 입니다.")
+					.build();
+			} else {
+				CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
+				verifyCeoJoin(ceoInfo);
+				ceoInfo.encodePassword(passwordEncoder);
+				ceoRepository.save(ceoInfo);
+				return CeoJoinRes.builder()
+					.success(true)
+					.message("회원가입이 완료되었습니다.")
+					.build();
+			}
+
 		} else {
 			return CeoJoinRes.builder()
 				.success(false)
@@ -133,13 +143,6 @@ public class CeoServiceImpl implements CeoService {
 	public void changeRoleAndSave(Long userId, Role role) {
 		CeoInfo ceoInfo = getCeoInfo(userId);
 		ceoInfo.changeRole(role);
-		ceoRepository.save(ceoInfo);
-	}
-
-	@Override
-	public void insertPhoneNum(Long userId, String phoneNum) {
-		CeoInfo ceoInfo = getCeoInfo(userId);
-		ceoInfo.insertPhoneNumber(phoneNum);
 		ceoRepository.save(ceoInfo);
 	}
 

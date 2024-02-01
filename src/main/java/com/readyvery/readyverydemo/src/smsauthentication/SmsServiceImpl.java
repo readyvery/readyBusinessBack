@@ -3,10 +3,8 @@ package com.readyvery.readyverydemo.src.smsauthentication;
 import org.springframework.stereotype.Service;
 
 import com.readyvery.readyverydemo.config.SolApiConfig;
-import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
-import com.readyvery.readyverydemo.src.ceo.CeoService;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendReq;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendRes;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyReq;
@@ -24,18 +22,16 @@ public class SmsServiceImpl implements SmsService {
 	private final SolApiConfig solApiConfig;
 	private final MessageSendingService messageSendingService;
 	private final VerificationService verificationService;
-	private final CeoService ceoServiceImpl;
 
 	@Override
-	public SmsSendRes sendSms(Long userId, SmsSendReq smsSendReq) {
+	public SmsSendRes sendSms(SmsSendReq smsSendReq) {
 		// Message 패키지가 중복될 경우 net.nurigo.sdk.message.model.Message로 치환하여 주세요
+
 		if (StringUtils.isEmpty(smsSendReq.getPhoneNumber())) {
 			throw new BusinessLogicException(ExceptionCode.INVALID_INPUT);
 		}
 
-		String code = verificationService.createVerificationCode(smsSendReq.getPhoneNumber());
-
-		ceoServiceImpl.insertPhoneNum(userId, smsSendReq.getPhoneNumber());
+		String code = verificationService.createVerificationCode(smsSendReq.getPhoneNumber(), false);
 
 		String messageContent = "[Readyvery] 아래의 인증번호를 입력해주세요.\n인증번호 : " + code;
 		boolean isMessageSent = messageSendingService.sendMessage(smsSendReq.getPhoneNumber(),
@@ -56,11 +52,12 @@ public class SmsServiceImpl implements SmsService {
 	}
 
 	@Override
-	public SmsVerifyRes verifySms(Long userId, SmsVerifyReq smsVerifyReq) {
+	public SmsVerifyRes verifySms(SmsVerifyReq smsVerifyReq) {
+
 		// Message 패키지가 중복될 경우 net.nurigo.sdk.message.model.Message로 치환하여 주세요
 		boolean isValid = verificationService.verifyCode(smsVerifyReq.getPhoneNumber(), smsVerifyReq.getVerifyNumber());
 		if (isValid) {
-			ceoServiceImpl.changeRoleAndSave(userId, Role.USER);
+
 			return SmsVerifyRes.builder()
 				.isSuccess(true)
 				.smsMessage("인증에 성공하였습니다.")
