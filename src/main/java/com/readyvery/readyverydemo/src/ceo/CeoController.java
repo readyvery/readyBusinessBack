@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
@@ -131,5 +133,17 @@ public class CeoController {
 	@PostMapping("/user/join")
 	public CeoJoinRes join(@RequestBody CeoJoinReq ceoJoinReq) {
 		return ceoServiceImpl.join(ceoJoinReq);
+	}
+
+	/**
+	 * 이메일 중복 체크
+	 */
+	@Operation(summary = "이메일 검증 기능", description = "사용자의 이메일을 검증합니다.", tags = {"유저 정보"})
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK")
+	})
+	@PostMapping("/user/duplicate/check")
+	public CeoDuplicateCheckRes emailDuplicateCheck(@RequestBody CeoDuplicateCheckReq ceoDuplicateCheckReq) {
+		return ceoServiceImpl.emailDuplicateCheck(ceoDuplicateCheckReq);
 	}
 }

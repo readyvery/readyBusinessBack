@@ -67,7 +67,8 @@ public class SpringSecurityConfig {
 			//== URL별 권한 관리 옵션 ==//
 			.authorizeHttpRequests((authz) -> authz
 				.requestMatchers("/v1/user/join",
-					"/v1/user/login"
+					"/v1/user/login",
+					"/v1/user/duplicate/check"
 				).anonymous() // 로그인되지 않은 사용자만 접근 가능
 				.requestMatchers(
 					"/v1/jwt-test",
