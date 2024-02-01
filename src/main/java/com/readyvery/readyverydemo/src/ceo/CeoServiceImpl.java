@@ -86,7 +86,6 @@ public class CeoServiceImpl implements CeoService {
 
 	@Override
 	public CeoJoinRes join(CeoJoinReq ceoJoinReq) {
-		
 		if (ceoJoinReq.getPassword().equals(ceoJoinReq.getConfirmPassword())) {
 			CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
 			verifyCeoJoin(ceoInfo);
