@@ -86,14 +86,22 @@ public class CeoServiceImpl implements CeoService {
 
 	@Override
 	public CeoJoinRes join(CeoJoinReq ceoJoinReq) {
-		CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
-		verifyCeoJoin(ceoInfo);
-		ceoInfo.encodePassword(passwordEncoder);
-		ceoRepository.save(ceoInfo);
-		return CeoJoinRes.builder()
-			.success(true)
-			.message("회원가입이 완료되었습니다.")
-			.build();
+		
+		if (ceoJoinReq.getPassword().equals(ceoJoinReq.getConfirmPassword())) {
+			CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
+			verifyCeoJoin(ceoInfo);
+			ceoInfo.encodePassword(passwordEncoder);
+			ceoRepository.save(ceoInfo);
+			return CeoJoinRes.builder()
+				.success(true)
+				.message("회원가입이 완료되었습니다.")
+				.build();
+		} else {
+			return CeoJoinRes.builder()
+				.success(false)
+				.message("비밀번호가 일치하지 않습니다.")
+				.build();
+		}
 	}
 
 	private void verifyCeoJoin(CeoInfo ceoInfo) {

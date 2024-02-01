@@ -35,7 +35,6 @@ public class CeoMapper {
 			.email(ceoJoinReq.getEmail())
 			.password(ceoJoinReq.getPassword())
 			.nickName(ceoJoinReq.getName())
-			.phone(ceoJoinReq.getPhone())
 			.role(Role.GUEST)
 			.build();
 	}

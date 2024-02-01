@@ -8,6 +8,7 @@ import lombok.Getter;
 public class CeoJoinReq {
 	private String email;
 	private String password;
+	private String confirmPassword;
 	private String name;
-	private String phone;
+
 }
