@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
 import com.readyvery.readyverydemo.config.SolApiConfig;
-import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.src.ceo.CeoService;
 import com.readyvery.readyverydemo.src.smsauthentication.MessageSendingService;
@@ -58,7 +57,7 @@ public class SmsServiceImplTest {
 		// given
 		SmsSendReq request = new SmsSendReq("01064393547");
 		when(solApiConfig.getPhoneNumber()).thenReturn("01064393547");
-		when(verificationService.createVerificationCode(anyString(), false)).thenReturn("123456");
+		when(verificationService.createVerificationCode("01064393547", false)).thenReturn("123456");
 		when(messageSendingService.sendMessage(request.getPhoneNumber(), solApiConfig.getPhoneNumber(),
 			"[Readyvery] 아래의 인증번호를 입력해주세요.\n인증번호 : 123456")).thenReturn(
 			true); // sendMessage의 결과를 모킹
@@ -76,7 +75,7 @@ public class SmsServiceImplTest {
 		// given
 		SmsVerifyReq request = new SmsVerifyReq("01012345678", "123456");
 		when(verificationService.verifyCode(request.getPhoneNumber(), request.getVerifyNumber())).thenReturn(true);
-		doNothing().when(ceoServiceImpl).changeRoleAndSave(1L, Role.USER);
+		//doNothing().when(ceoServiceImpl).changeRoleAndSave(1L, Role.USER);
 
 		// when
 		SmsVerifyRes response = smsService.verifySms(request);
