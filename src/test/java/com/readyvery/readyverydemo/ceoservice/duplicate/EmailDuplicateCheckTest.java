@@ -1,4 +1,4 @@
-package com.readyvery.readyverydemo.duplicate;
+package com.readyvery.readyverydemo.ceoservice.duplicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
