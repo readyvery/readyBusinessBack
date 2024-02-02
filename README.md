@@ -1,4 +1,4 @@
-![src](https://github.com/readyvery/readyBusinessBack/assets/78861124/08c731cf-1a75-4d10-a723-cfc90a5de6ef)<h1 align="center">Welcome to Readyvery-Business-WEB 👋</h1>
+<h1 align="center">Welcome to Readyvery-Business-WEB 👋</h1>
 
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
