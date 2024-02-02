@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Readyvery-Business-WEB 👋</h1>
+![src](https://github.com/readyvery/readyBusinessBack/assets/78861124/08c731cf-1a75-4d10-a723-cfc90a5de6ef)<h1 align="center">Welcome to Readyvery-Business-WEB 👋</h1>
 
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
@@ -67,6 +67,12 @@
 ## ERD
 
 ![Readyvery Service](https://github.com/readyvery/readyBusinessBack/assets/78861124/32e8218a-f8ec-49f4-a689-77dd6d6578bc)
+
+
+## Dependencies
+![src](https://github.com/readyvery/readyBusinessBack/assets/78861124/3f1acaf1-489f-477c-9476-734b17ce23aa)
+
+
 
 ## Usage
 
