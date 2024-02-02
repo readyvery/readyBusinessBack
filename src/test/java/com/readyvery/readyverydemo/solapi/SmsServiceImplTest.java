@@ -10,11 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import net.nurigo.sdk.message.service.DefaultMessageService;
-
 import com.readyvery.readyverydemo.config.SolApiConfig;
-import com.readyvery.readyverydemo.domain.repository.CeoRepository;
-import com.readyvery.readyverydemo.src.ceo.CeoService;
 import com.readyvery.readyverydemo.src.smsauthentication.MessageSendingService;
 import com.readyvery.readyverydemo.src.smsauthentication.SmsServiceImpl;
 import com.readyvery.readyverydemo.src.smsauthentication.VerificationService;
@@ -30,16 +26,7 @@ public class SmsServiceImplTest {
 	private SolApiConfig solApiConfig;
 
 	@Mock
-	private CeoRepository ceoRepository;
-
-	@Mock
-	private DefaultMessageService messageService;
-
-	@Mock
 	private VerificationService verificationService;
-
-	@Mock
-	private CeoService ceoServiceImpl;
 
 	@InjectMocks
 	private SmsServiceImpl smsService;
