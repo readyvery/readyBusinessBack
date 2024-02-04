@@ -89,20 +89,27 @@ public class CeoServiceImpl implements CeoService {
 	@Override
 	public CeoJoinRes join(CeoJoinReq ceoJoinReq) {
 		if (ceoJoinReq.getPassword().equals(ceoJoinReq.getConfirmPassword())) {
-			if (!verificationService.verifyNumber(ceoJoinReq.getPhone())) {
+			if (ceoRepository.existsByEmail(ceoJoinReq.getEmail())) {
 				return CeoJoinRes.builder()
 					.success(false)
-					.message("인증되지 않은 전화번호 입니다.")
+					.message("이미 존재하는 이메일입니다.")
 					.build();
 			} else {
-				CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
-				verifyCeoJoin(ceoInfo);
-				ceoInfo.encodePassword(passwordEncoder);
-				ceoRepository.save(ceoInfo);
-				return CeoJoinRes.builder()
-					.success(true)
-					.message("회원가입이 완료되었습니다.")
-					.build();
+				if (!verificationService.verifyNumber(ceoJoinReq.getPhone())) {
+					return CeoJoinRes.builder()
+						.success(false)
+						.message("인증되지 않은 전화번호 입니다.")
+						.build();
+				} else {
+					CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
+					verifyCeoJoin(ceoInfo);
+					ceoInfo.encodePassword(passwordEncoder);
+					ceoRepository.save(ceoInfo);
+					return CeoJoinRes.builder()
+						.success(true)
+						.message("회원가입이 완료되었습니다.")
+						.build();
+				}
 			}
 
 		} else {
