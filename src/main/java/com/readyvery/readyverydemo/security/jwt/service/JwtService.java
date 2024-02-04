@@ -2,6 +2,8 @@ package com.readyvery.readyverydemo.security.jwt.service;
 
 import java.util.Optional;
 
+import com.readyvery.readyverydemo.domain.Role;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -21,7 +23,7 @@ public interface JwtService {
 	/**
 	 * AccessToken + RefreshToken 헤더에 실어서 보내기
 	 */
-	void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken);
+	void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken, Role role);
 
 	/**
 	 * 쿠키에서 RefreshToken 추출
