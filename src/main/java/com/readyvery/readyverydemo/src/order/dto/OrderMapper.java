@@ -26,6 +26,7 @@ public class OrderMapper {
 			.idx(order.getId())
 			.orderNum(order.getOrderNumber())
 			.orderId(order.getOrderId())
+			.progress(order.getProgress())
 			.pickUp(order.getInOut())
 			.time(order.getCreatedAt())
 			.phone(order.getUserInfo().getPhone())
