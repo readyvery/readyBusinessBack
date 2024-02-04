@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "CEOMETAINFO")
+@Table(name = "INFOTAINMENT")
 @AllArgsConstructor
 @Slf4j
 public class CeoMetaInfo extends BaseTimeEntity {
@@ -33,5 +33,5 @@ public class CeoMetaInfo extends BaseTimeEntity {
 
 	@Column(nullable = false, length = 45)
 	private String registrationNumber;
-	
+
 }
