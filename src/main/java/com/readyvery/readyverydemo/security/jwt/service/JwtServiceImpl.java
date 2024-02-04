@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.readyvery.readyverydemo.domain.CeoInfo;
+import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
@@ -57,9 +58,10 @@ public class JwtServiceImpl implements JwtService {
 	 * AccessToken + RefreshToken 헤더에 실어서 보내기
 	 */
 	@Override
-	public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+	public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken,
+		Role role) {
 
-		jwtTokenizer.addAccessRefreshTokenResponseBody(response, accessToken, refreshToken);
+		jwtTokenizer.addAccessRefreshTokenResponseBody(response, accessToken, refreshToken, role);
 		jwtTokenizer.addAccessTokenCookie(response, accessToken);
 		jwtTokenizer.addRefreshTokenCookie(response, refreshToken);
 		log.info("Access Token, Refresh Token 헤더 설정 완료");

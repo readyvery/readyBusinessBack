@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.security.jwt.config.JwtConfig;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLoginRes;
 
@@ -31,7 +32,7 @@ public class TokenSendManager {
 
 	}
 
-	public void addTokenResponseBody(HttpServletResponse response, String accessToken, String refreshToken) {
+	public void addTokenResponseBody(HttpServletResponse response, String accessToken, String refreshToken, Role role) {
 
 		// JSON 응답 생성 및 전송
 
@@ -42,6 +43,7 @@ public class TokenSendManager {
 			.message("로그인 성공")
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
+			.role(role)
 			.build();
 
 		try {
