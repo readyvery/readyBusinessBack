@@ -146,4 +146,5 @@ public class CeoController {
 	public CeoDuplicateCheckRes emailDuplicateCheck(@RequestBody CeoDuplicateCheckReq ceoDuplicateCheckReq) {
 		return ceoServiceImpl.emailDuplicateCheck(ceoDuplicateCheckReq);
 	}
+
 }

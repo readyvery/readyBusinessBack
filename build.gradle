@@ -53,6 +53,11 @@ dependencies {
     //SOLAPI
     implementation 'net.nurigo:sdk:4.2.7'
 
+    //AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+
 //    //Querydsl 추가
 //    implementation 'com.querydsl:querydsl-core:5.0.0'
 //    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

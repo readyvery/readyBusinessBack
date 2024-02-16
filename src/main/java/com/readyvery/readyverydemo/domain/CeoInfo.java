@@ -1,9 +1,12 @@
 package com.readyvery.readyverydemo.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -93,6 +97,11 @@ public class CeoInfo extends BaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_idx")
 	private Store store = null;
+
+	// 사장님 입점신청서 연관관계 매핑
+	@Builder.Default
+	@OneToMany(mappedBy = "ceoInfo", cascade = CascadeType.ALL)
+	private List<CeoMetaInfo> ceoMetaInfos = new ArrayList<CeoMetaInfo>();
 
 	// 리프레시토큰 업데이트
 	public void updateRefresh(String updateRefreshToken) {
