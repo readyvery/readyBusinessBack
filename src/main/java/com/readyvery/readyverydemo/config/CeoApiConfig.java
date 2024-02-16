@@ -12,7 +12,5 @@ public class CeoApiConfig {
 	private String refreshCookie;
 	@Value("${service.app.admin.key}")
 	private String serviceAppAdminKey;
-	@Value("${upload.path}")
-	private String uploadPath;
 
 }

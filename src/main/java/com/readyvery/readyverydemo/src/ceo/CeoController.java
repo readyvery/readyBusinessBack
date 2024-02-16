@@ -1,11 +1,9 @@
 package com.readyvery.readyverydemo.src.ceo;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +17,6 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
-import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoReq;
-import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -149,20 +145,6 @@ public class CeoController {
 	@PostMapping("/user/duplicate/check")
 	public CeoDuplicateCheckRes emailDuplicateCheck(@RequestBody CeoDuplicateCheckReq ceoDuplicateCheckReq) {
 		return ceoServiceImpl.emailDuplicateCheck(ceoDuplicateCheckReq);
-	}
-
-	/**
-	 * 사용자 메타 정보 작성
-	 */
-	@Operation(summary = "사용자 메타 정보 작성 기능", description = "사용자 메타 정보를 작성합니다.", tags = {"유저 정보"})
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "OK")
-	})
-	@PostMapping(value = "/user/meta/info", consumes = "multipart/form-data")
-	public CeoMetaInfoRes join(@AuthenticationPrincipal CustomUserDetails userDetails,
-		@ModelAttribute CeoMetaInfoReq ceoMetaInfoReq) throws IOException, ExecutionException,
-		InterruptedException {
-		return ceoServiceImpl.getCeoMetaInfo(userDetails.getId(), ceoMetaInfoReq);
 	}
 
 }

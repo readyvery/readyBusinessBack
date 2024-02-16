@@ -1,32 +1,21 @@
 package com.readyvery.readyverydemo.src.ceo;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.readyvery.readyverydemo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.domain.CeoInfo;
-import com.readyvery.readyverydemo.domain.CeoMetaInfo;
 import com.readyvery.readyverydemo.domain.Role;
-import com.readyvery.readyverydemo.domain.repository.CeoMetaRepository;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
@@ -41,8 +30,6 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMapper;
-import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoReq;
-import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 import com.readyvery.readyverydemo.src.smsauthentication.VerificationService;
 
@@ -61,9 +48,6 @@ public class CeoServiceImpl implements CeoService {
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final VerificationService verificationService;
-	private final CeoMetaRepository ceoMetaRepository;
-
-	private AmazonS3 amazonS3Client;
 
 	@Override
 	public CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails) {
@@ -187,107 +171,6 @@ public class CeoServiceImpl implements CeoService {
 			.success(true)
 			.message("사용 가능한 이메일입니다.")
 			.build();
-	}
-
-	@Override
-	public CeoMetaInfoRes getCeoMetaInfo(Long id, CeoMetaInfoReq ceoMetaInfoReq) throws
-		IOException,
-		ExecutionException,
-		InterruptedException {
-		// 1. 유저 정보 확인
-		CeoInfo ceoInfo = getCeoInfo(id);
-		if (ceoInfo.getRole() != Role.USER) {
-			throw new BusinessLogicException(ExceptionCode.AUTH_ERROR);
-		}
-
-		// 2. 서버에 파일 저장 & DB에 파일 정보(fileinfo) 저장
-		// - 동일 파일명을 피하기 위해 random값 사용
-		String businessLicenseSaveFileName = createSaveFileName(
-			ceoMetaInfoReq.getBusinessLicense().getOriginalFilename());
-		String businessReportSaveFileName = createSaveFileName(
-			ceoMetaInfoReq.getBusinessReport().getOriginalFilename());
-		String identityCardSaveFileName = createSaveFileName(ceoMetaInfoReq.getIdentityCard().getOriginalFilename());
-		String bankAccountSaveFileName = createSaveFileName(ceoMetaInfoReq.getBankAccount().getOriginalFilename());
-
-		// 2-1.서버에 파일 저장
-		ceoMetaInfoReq.getBusinessLicense().transferTo(new File(getFullPath(businessLicenseSaveFileName)));
-		ceoMetaInfoReq.getBusinessReport().transferTo(new File(getFullPath(businessReportSaveFileName)));
-		ceoMetaInfoReq.getIdentityCard().transferTo(new File(getFullPath(identityCardSaveFileName)));
-		ceoMetaInfoReq.getBankAccount().transferTo(new File(getFullPath(bankAccountSaveFileName)));
-
-		List<MultipartFile> files = List.of(
-			ceoMetaInfoReq.getBusinessLicense(),
-			ceoMetaInfoReq.getBusinessReport(),
-			ceoMetaInfoReq.getIdentityCard(),
-			ceoMetaInfoReq.getBankAccount());
-
-		List<CompletableFuture<Void>> uploadJobs = files.stream().map(file -> CompletableFuture.runAsync(() -> {
-			if (file != null && !file.isEmpty()) {
-				try {
-					ObjectMetadata objectMetadata = new ObjectMetadata();
-					objectMetadata.setContentType(file.getContentType());
-					objectMetadata.setContentLength(file.getSize());
-
-					// 예시로 objectKey 설정, 실제로는 파일 이름이나 다른 식별자를 기반으로 설정할 수 있습니다.
-					String objectKey = "your-directory/" + file.getOriginalFilename();
-
-					PutObjectRequest putObjectRequest = new PutObjectRequest(
-						"bucketName",
-						objectKey,
-						file.getInputStream(),
-						objectMetadata);
-
-					amazonS3Client.putObject(putObjectRequest);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		})).toList();
-
-		CompletableFuture.allOf(uploadJobs.toArray(new CompletableFuture[0])).get();
-
-		// 2-3. DB에 정보 저장
-		// - 파일 정보 저장
-		CeoMetaInfo ceoMetaInfo = CeoMetaInfo.builder()
-			.ceoInfo(ceoInfo)
-			.storeName(ceoMetaInfoReq.getStoreName())
-			.storeAddress(ceoMetaInfoReq.getStoreAddress())
-			.registrationNumber(ceoMetaInfoReq.getRegistrationNumber())
-			.businessLicenseFileName(businessLicenseSaveFileName)
-			.businessReportFileName(businessReportSaveFileName)
-			.identityCardFileName(identityCardSaveFileName)
-			.bankAccountFileName(bankAccountSaveFileName)
-			.build();
-
-		ceoMetaRepository.save(ceoMetaInfo);
-
-		// 3. 유저 권한 변경
-		changeRoleAndSave(id, Role.READY);
-
-		return CeoMetaInfoRes.builder()
-			.success(true)
-			.message("입점신청 완료")
-			.build();
-	}
-
-	// 파일 저장 이름 만들기
-	// - 사용자들이 올리는 파일 이름이 같을 수 있으므로, 자체적으로 랜덤 이름을 만들어 사용한다
-	private String createSaveFileName(String originalFilename) {
-		String ext = extractExt(originalFilename);
-		String uuid = UUID.randomUUID().toString();
-		return uuid + "." + ext;
-	}
-
-	// 확장자명 구하기
-	private String extractExt(String originalFilename) {
-		int pos = originalFilename.lastIndexOf(".");
-		return originalFilename.substring(pos + 1);
-	}
-
-	// fullPath 만들기
-	private String getFullPath(String filename) {
-
-		return ceoApiConfig.getUploadPath() + File.separator + filename;
 	}
 
 	private void removeRefreshTokenInRedis(CustomUserDetails userDetails) {
