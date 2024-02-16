@@ -1,6 +1,7 @@
 package com.readyvery.readyverydemo.src.ceo;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.Role;
@@ -12,6 +13,8 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,5 +36,10 @@ public interface CeoService {
 	void changeRoleAndSave(Long userId, Role role);
 
 	CeoDuplicateCheckRes emailDuplicateCheck(CeoDuplicateCheckReq ceoDuplicateCheckReq);
+
+	CeoMetaInfoRes getCeoMetaInfo(Long id, CeoMetaInfoReq ceoMetaInfoReq) throws
+		IOException,
+		ExecutionException,
+		InterruptedException;
 
 }
