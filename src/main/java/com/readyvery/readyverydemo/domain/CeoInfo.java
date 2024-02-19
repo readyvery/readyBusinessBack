@@ -125,11 +125,8 @@ public class CeoInfo extends BaseTimeEntity {
 		this.role = role;
 	}
 
-	public void insertPhoneNumber(String phoneNum) {
-		this.phone = phoneNum;
-	}
-
 	public void rejectEntry() {
+
 		if (!this.role.equals(Role.REJECT)) {
 			throw new BusinessLogicException(ExceptionCode.NOT_REJECT_ROLE);
 		}

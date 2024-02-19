@@ -28,10 +28,10 @@ import com.readyvery.readyverydemo.config.TossPaymentConfig;
 import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.Order;
 import com.readyvery.readyverydemo.domain.Progress;
-import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.domain.repository.OrderRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
+import com.readyvery.readyverydemo.src.ceo.CeoService;
 import com.readyvery.readyverydemo.src.order.dto.OrderMapper;
 import com.readyvery.readyverydemo.src.order.dto.OrderRegisterRes;
 import com.readyvery.readyverydemo.src.order.dto.OrderStatusRes;
@@ -47,13 +47,13 @@ import lombok.extern.log4j.Log4j2;
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final OrderMapper orderMapper;
-	private final CeoRepository ceoRepository;
+	private final CeoService ceoServiceImpl;
 	private final TossPaymentConfig tosspaymentConfig;
 	private final SolApiConfig solApiConfig;
 
 	@Override
 	public OrderRegisterRes getOrders(Long id, Progress progress) {
-		CeoInfo ceoInfo = getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(id);
 
 		if (progress == null) {
 			throw new BusinessLogicException(ExceptionCode.NOT_PROGRESS_ORDER);
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderStatusRes completeOrder(Long id, OrderStatusUpdateReq request) {
-		CeoInfo ceoInfo = getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(id);
 		Order order = getOrder(request.getOrderId());
 		verifyPostOrder(ceoInfo, order);
 		verifyPostProgress(order, request);
@@ -81,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
 		orderRepository.save(order);
 
 		sendCompleteMessage(order, request.getStatus());
+
 		return OrderStatusRes.builder()
 			.success(true)
 			.build();
@@ -122,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderStatusRes cancelOrder(Long id, OrderStatusUpdateReq request) {
-		CeoInfo ceoInfo = getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(id);
 		Order order = getOrder(request.getOrderId());
 
 		verifyPostOrder(ceoInfo, order);
@@ -218,12 +219,6 @@ public class OrderServiceImpl implements OrderService {
 	private Order getOrder(String orderId) {
 		return orderRepository.findByOrderId(orderId).orElseThrow(
 			() -> new BusinessLogicException(ExceptionCode.NOT_FOUND_ORDER)
-		);
-	}
-
-	private CeoInfo getCeoInfo(Long id) {
-		return ceoRepository.findById(id).orElseThrow(
-			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
 		);
 	}
 
