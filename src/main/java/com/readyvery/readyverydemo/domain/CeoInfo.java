@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
+import com.readyvery.readyverydemo.global.exception.ExceptionCode;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -124,5 +127,12 @@ public class CeoInfo extends BaseTimeEntity {
 
 	public void insertPhoneNumber(String phoneNum) {
 		this.phone = phoneNum;
+	}
+
+	public void rejectEntry() {
+		if (!this.role.equals(Role.REJECT)) {
+			throw new BusinessLogicException(ExceptionCode.NOT_REJECT_ROLE);
+		}
+		this.role = Role.USER;
 	}
 }
