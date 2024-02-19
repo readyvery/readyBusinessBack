@@ -30,6 +30,7 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMapper;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 import com.readyvery.readyverydemo.src.smsauthentication.VerificationService;
 
@@ -83,6 +84,17 @@ public class CeoServiceImpl implements CeoService {
 		return CeoRemoveRes.builder()
 			.message("회원 탈퇴가 완료되었습니다.")
 			.success(true)
+			.build();
+	}
+
+	@Override
+	public CeoMetaInfoRes entryReject(Long id) {
+		CeoInfo ceoInfo = getCeoInfo(id);
+		ceoInfo.rejectEntry();
+		ceoRepository.save(ceoInfo);
+		return CeoMetaInfoRes.builder()
+			.success(true)
+			.message("다시 입점 신청 부탁드립니다.")
 			.build();
 	}
 

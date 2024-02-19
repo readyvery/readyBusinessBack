@@ -17,6 +17,7 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -145,6 +146,18 @@ public class CeoController {
 	@PostMapping("/user/duplicate/check")
 	public CeoDuplicateCheckRes emailDuplicateCheck(@RequestBody CeoDuplicateCheckReq ceoDuplicateCheckReq) {
 		return ceoServiceImpl.emailDuplicateCheck(ceoDuplicateCheckReq);
+	}
+
+	/**
+	 * 입점신청서 거부 -> 재신청으로 변경
+	 */
+	@Operation(summary = "입점신청서 거부 -> 재신청으로 변경 기능", description = "입점신청서를 거부하고 재신청으로 변경합니다.", tags = {"유저 정보"})
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK")
+	})
+	@GetMapping("/ceo/entry/reject")
+	public CeoMetaInfoRes entryReject(@AuthenticationPrincipal CustomUserDetails userDetails) {
+		return ceoServiceImpl.entryReject(userDetails.getId());
 	}
 
 }

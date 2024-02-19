@@ -12,6 +12,7 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,5 +34,7 @@ public interface CeoService {
 	void changeRoleAndSave(Long userId, Role role);
 
 	CeoDuplicateCheckRes emailDuplicateCheck(CeoDuplicateCheckReq ceoDuplicateCheckReq);
+
+	CeoMetaInfoRes entryReject(Long id);
 
 }
