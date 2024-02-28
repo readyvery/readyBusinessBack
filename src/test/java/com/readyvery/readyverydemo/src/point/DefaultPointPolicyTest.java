@@ -24,6 +24,7 @@ class DefaultPointPolicyTest {
 		// then
 		assertEquals(26L, point);
 	}
+
 	@Test
 	@DisplayName("보통 금액 테스트")
 	void calculateNomalPoint() {

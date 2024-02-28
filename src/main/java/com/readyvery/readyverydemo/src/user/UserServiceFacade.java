@@ -8,7 +8,6 @@ import com.readyvery.readyverydemo.domain.UserInfo;
 import com.readyvery.readyverydemo.domain.repository.UserRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -16,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceFacade {
 	private final UserRepository userRepository;
 
-	public UserInfo getUserInfo(Long id){
+	public UserInfo getUserInfo(Long id) {
 		return userRepository.findById(id).orElseThrow(
 			() -> new BusinessLogicException(USER_NOT_FOUND)
 		);
 	}
 
-	public void saveUser(UserInfo userInfo){
+	public void saveUser(UserInfo userInfo) {
 		userRepository.save(userInfo);
 	}
 }

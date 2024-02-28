@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PointServiceImpl implements PointService{
+public class PointServiceImpl implements PointService {
 	private final PointPolicy pointPolicy;
 	private final UserServiceFacade userServiceFacade;
 

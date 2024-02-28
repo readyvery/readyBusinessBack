@@ -1,6 +1,6 @@
 package com.readyvery.readyverydemo.src.point;
 
-public class DefaultPointPolicy implements PointPolicy{
+public class DefaultPointPolicy implements PointPolicy {
 	private Double pointRate = 2.5;
 
 	@Override
