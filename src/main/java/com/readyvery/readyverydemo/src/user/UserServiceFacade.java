@@ -16,8 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceFacade {
 	private final UserRepository userRepository;
 
-	@Transactional
-	public UserInfo getUser(Long id){
+	public UserInfo getUserInfo(Long id){
 		return userRepository.findById(id).orElseThrow(
 			() -> new BusinessLogicException(USER_NOT_FOUND)
 		);

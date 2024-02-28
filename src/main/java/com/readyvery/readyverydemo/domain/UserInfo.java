@@ -126,4 +126,8 @@ public class UserInfo extends BaseTimeEntity {
 	public void updateStatus(boolean status) {
 		this.status = status;
 	}
+
+	public void addPoint(Long calculatePoint) {
+		this.point += calculatePoint;
+	}
 }
