@@ -5,7 +5,7 @@ public class DefaultPointPolicy implements PointPolicy{
 
 	@Override
 	public Long calculatePoint(Long price) {
-		Double tmp = price * pointRate + 0.5; // 반올림
+		Double tmp = price * pointRate / 100 + 0.5; // 반올림
 		return tmp.longValue();
 	}
 }
