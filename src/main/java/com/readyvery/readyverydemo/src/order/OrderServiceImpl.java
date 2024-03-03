@@ -130,6 +130,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Transactional
 	public OrderStatusRes cancelOrder(Long id, OrderStatusUpdateReq request) {
 		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(id);
 		Order order = getOrder(request.getOrderId());
