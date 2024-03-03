@@ -5,4 +5,6 @@ import com.readyvery.readyverydemo.domain.Progress;
 
 public interface PointService {
 	void giveOrderPoint(Order order, Progress status);
+
+	void cancelOrderPoint(Order order);
 }
