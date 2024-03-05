@@ -132,4 +132,8 @@ public class CeoInfo extends BaseTimeEntity {
 		}
 		this.role = Role.USER;
 	}
+
+	public void updatePassword(String password, PasswordEncoder passwordEncoder) {
+		this.password = passwordEncoder.encode(password);
+	}
 }

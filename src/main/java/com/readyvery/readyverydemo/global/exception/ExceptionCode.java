@@ -27,7 +27,8 @@ public enum ExceptionCode {
 	PHONE_NUMBER_DUPLICATION(404, "Phone number is duplicated."),
 	INVALID_INPUT(400, "Invalid input."),
 	AUTH_ERROR(401, "Auth Error"),
-	NOT_REJECT_ROLE(403, "Not reject role.");
+	NOT_REJECT_ROLE(403, "Not reject role."),
+	BAD_REQUEST(400, "Bad request.");
 
 	private int status;
 	private String message;

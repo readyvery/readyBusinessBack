@@ -1,6 +1,6 @@
 package com.readyvery.readyverydemo.security.jwt.service.extract;
 
-import static com.readyvery.readyverydemo.security.jwt.config.JwtConfig.*;
+import static com.readyvery.readyverydemo.config.JwtConfig.*;
 
 import java.util.Arrays;
 import java.util.Optional;

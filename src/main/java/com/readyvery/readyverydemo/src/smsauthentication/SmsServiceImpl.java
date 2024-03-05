@@ -32,7 +32,6 @@ public class SmsServiceImpl implements SmsService {
 		}
 
 		String code = verificationService.createVerificationCode(smsSendReq.getPhoneNumber(), false);
-
 		String messageContent = "[Readyvery] 아래의 인증번호를 입력해주세요.\n인증번호 : " + code;
 		boolean isMessageSent = messageSendingService.sendMessage(smsSendReq.getPhoneNumber(),
 			solApiConfig.getPhoneNumber(), messageContent);
@@ -53,6 +52,10 @@ public class SmsServiceImpl implements SmsService {
 
 	@Override
 	public SmsVerifyRes verifySms(SmsVerifyReq smsVerifyReq) {
+
+		if (StringUtils.isEmpty(smsVerifyReq.getPhoneNumber())) {
+			throw new BusinessLogicException(ExceptionCode.INVALID_INPUT);
+		}
 
 		// Message 패키지가 중복될 경우 net.nurigo.sdk.message.model.Message로 치환하여 주세요
 		boolean isValid = verificationService.verifyCode(smsVerifyReq.getPhoneNumber(), smsVerifyReq.getVerifyNumber());

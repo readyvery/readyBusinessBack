@@ -32,6 +32,7 @@ import com.readyvery.readyverydemo.domain.repository.OrderRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
 import com.readyvery.readyverydemo.src.ceo.CeoService;
+import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
 import com.readyvery.readyverydemo.src.order.dto.OrderMapper;
 import com.readyvery.readyverydemo.src.order.dto.OrderRegisterRes;
 import com.readyvery.readyverydemo.src.order.dto.OrderStatusRes;
@@ -52,11 +53,15 @@ public class OrderServiceImpl implements OrderService {
 	private final CeoService ceoServiceImpl;
 	private final TossPaymentConfig tosspaymentConfig;
 	private final SolApiConfig solApiConfig;
+
+	private final CeoServiceFacade ceoServiceFacade;
+
 	private final PointService pointService;
+
 
 	@Override
 	public OrderRegisterRes getOrders(Long id, Progress progress) {
-		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 
 		if (progress == null) {
 			throw new BusinessLogicException(ExceptionCode.NOT_PROGRESS_ORDER);
@@ -77,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional
 	public OrderStatusRes completeOrder(Long id, OrderStatusUpdateReq request) {
-		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 		Order order = getOrder(request.getOrderId());
 		verifyPostOrder(ceoInfo, order);
 		verifyPostProgress(order, request);
@@ -132,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional
 	public OrderStatusRes cancelOrder(Long id, OrderStatusUpdateReq request) {
-		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 		Order order = getOrder(request.getOrderId());
 
 		verifyPostOrder(ceoInfo, order);

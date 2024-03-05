@@ -1,6 +1,6 @@
 package com.readyvery.readyverydemo.security.jwt.service.create;
 
-import static com.readyvery.readyverydemo.security.jwt.config.JwtConfig.*;
+import static com.readyvery.readyverydemo.config.JwtConfig.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -9,7 +9,7 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
-import com.readyvery.readyverydemo.security.jwt.config.JwtConfig;
+import com.readyvery.readyverydemo.config.JwtConfig;
 
 import lombok.RequiredArgsConstructor;
 

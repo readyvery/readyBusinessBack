@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.readyvery.readyverydemo.security.jwt.config.JwtConfig;
+import com.readyvery.readyverydemo.config.JwtConfig;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
 import com.readyvery.readyverydemo.security.oauth2.CustomOAuth2User;
 
@@ -46,8 +46,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
 		String refreshToken = jwtService.createRefreshToken();
 
-		//jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken, role);  // TODO : role이 없음
-		jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken,
+			oAuth2User.getRole());  // TODO : role이 없음
+		//jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
 
 	}
 

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.readyvery.readyverydemo.config.CeoApiConfig;
 import com.readyvery.readyverydemo.domain.CeoInfo;
-import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
@@ -25,6 +24,9 @@ import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoFindEmailRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
@@ -49,7 +51,9 @@ public class CeoServiceImpl implements CeoService {
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final VerificationService verificationService;
+	private final CeoServiceFacade ceoServiceFacade;
 
+	// TODO: role이 userDetails도 계속 변경되는지 확인
 	@Override
 	public CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails) {
 		verifyUserDetails(userDetails);
@@ -59,8 +63,46 @@ public class CeoServiceImpl implements CeoService {
 
 	@Override
 	public CeoInfoRes getCeoInfoById(Long id) {
-		CeoInfo ceoInfo = getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 		return ceoMapper.ceoInfoToCeoInfoRes(ceoInfo);
+	}
+
+	@Override
+	public CeoFindEmailRes findCeoEmail(String phoneNumber) {
+
+		if (!verificationService.verifyNumber(phoneNumber)) {
+			return CeoFindEmailRes.builder()
+				.success(false)
+				.message("인증되지 않은 전화번호 입니다.")
+				.build();
+		}
+		String ceoInfoEmail = ceoServiceFacade.findCeoEmailByPhone(phoneNumber);
+		return CeoFindEmailRes.builder()
+			.success(false)
+			.message("아이디 " + ceoInfoEmail)
+			.build();
+	}
+
+	@Override
+	public CeoFindPasswordRes findCeoPassword(CeoFindPasswordReq ceoFindPasswordReq) {
+		if (!ceoFindPasswordReq.getPassword().equals(ceoFindPasswordReq.getConfirmPassword())
+			|| ceoFindPasswordReq.getPhoneNumber().isEmpty() || ceoFindPasswordReq.getPassword().isEmpty()) {
+			throw new BusinessLogicException(ExceptionCode.BAD_REQUEST);
+		} else if (!verificationService.verifyNumber(ceoFindPasswordReq.getPhoneNumber())) {
+			return CeoFindPasswordRes.builder()
+				.success(false)
+				.message("인증되지 않은 전화번호 입니다.")
+				.build();
+		} else {
+			CeoInfo ceoInfo = ceoServiceFacade.getCeoInfoByPhone(ceoFindPasswordReq.getPhoneNumber());
+			ceoServiceFacade.updatePassword(ceoInfo, ceoFindPasswordReq.getPassword());
+
+			return CeoFindPasswordRes.builder()
+				.success(true)
+				.message("비밀번호 변경이 완료되었습니다.")
+				.build();
+		}
+
 	}
 
 	@Override
@@ -76,11 +118,12 @@ public class CeoServiceImpl implements CeoService {
 
 	@Override
 	public CeoRemoveRes removeUser(CustomUserDetails userDetails, HttpServletResponse response) throws IOException {
-		CeoInfo user = getCeoInfo(userDetails.getId());
+		CeoInfo user = ceoServiceFacade.getCeoInfo(userDetails.getId());
 		requestToServer("KakaoAK " + ceoApiConfig.getServiceAppAdminKey(),
 			"target_id_type=user_id&target_id=" + user.getSocialId());
 		removeRefreshTokenInRedis(userDetails); // Redis에서 Refresh Token 삭제
 		invalidateRefreshTokenCookie(response); // 쿠키 무효화
+		user.updateRemoveCeoDate();
 		return CeoRemoveRes.builder()
 			.message("회원 탈퇴가 완료되었습니다.")
 			.success(true)
@@ -89,7 +132,7 @@ public class CeoServiceImpl implements CeoService {
 
 	@Override
 	public CeoMetaInfoRes entryReject(Long id) {
-		CeoInfo ceoInfo = getCeoInfo(id);
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 		ceoInfo.rejectEntry();
 		ceoRepository.save(ceoInfo);
 		return CeoMetaInfoRes.builder()
@@ -107,14 +150,19 @@ public class CeoServiceImpl implements CeoService {
 					.message("이미 존재하는 이메일입니다.")
 					.build();
 			} else {
-				if (!verificationService.verifyNumber(ceoJoinReq.getPhone())) {
+				if (ceoServiceFacade.isExistPhone(ceoJoinReq.getPhone())) {
+					return CeoJoinRes.builder()
+						.success(false)
+						.message("이미 가입 이력이 있는 전화번호입니다.")
+						.build();
+				} else if (!verificationService.verifyNumber(ceoJoinReq.getPhone())) {
 					return CeoJoinRes.builder()
 						.success(false)
 						.message("인증되지 않은 전화번호 입니다.")
 						.build();
 				} else {
 					CeoInfo ceoInfo = ceoMapper.ceoJoinReqToCeoInfo(ceoJoinReq);
-					verifyCeoJoin(ceoInfo);
+					ceoServiceFacade.verifyCeoJoin(ceoInfo);
 					ceoInfo.encodePassword(passwordEncoder);
 					ceoRepository.save(ceoInfo);
 					return CeoJoinRes.builder()
@@ -132,13 +180,6 @@ public class CeoServiceImpl implements CeoService {
 		}
 	}
 
-	private void verifyCeoJoin(CeoInfo ceoInfo) {
-		if (ceoRepository.existsByEmail(ceoInfo.getEmail())) {
-			throw new BusinessLogicException(ExceptionCode.EMAIL_DUPLICATION);
-		}
-
-	}
-
 	/**
 	 * 로그아웃
 	 * @param response
@@ -149,20 +190,6 @@ public class CeoServiceImpl implements CeoService {
 		refreshTokenCookie.setPath("/api/v1/refresh/token"); // 기존과 동일한 경로 설정
 		refreshTokenCookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 즉시 만료
 		response.addCookie(refreshTokenCookie);
-	}
-
-	@Override
-	public CeoInfo getCeoInfo(Long id) {
-		return ceoRepository.findById(id).orElseThrow(
-			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
-		);
-	}
-
-	@Override
-	public void changeRoleAndSave(Long userId, Role role) {
-		CeoInfo ceoInfo = getCeoInfo(userId);
-		ceoInfo.changeRole(role);
-		ceoRepository.save(ceoInfo);
 	}
 
 	@Override

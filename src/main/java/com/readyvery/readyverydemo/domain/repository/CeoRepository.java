@@ -16,4 +16,10 @@ public interface CeoRepository extends JpaRepository<CeoInfo, Long> {
 	Optional<CeoInfo> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 
 	boolean existsByEmail(String email);
+
+	boolean existsByPhone(String phoneNumber);
+
+	Optional<String> findEmailByPhone(String phoneNumber);
+
+	Optional<CeoInfo> findByPhone(String phoneNumber);
 }
