@@ -38,7 +38,9 @@ import com.readyvery.readyverydemo.src.order.dto.OrderRegisterRes;
 import com.readyvery.readyverydemo.src.order.dto.OrderStatusRes;
 import com.readyvery.readyverydemo.src.order.dto.OrderStatusUpdateReq;
 import com.readyvery.readyverydemo.src.order.dto.TosspaymentDto;
+import com.readyvery.readyverydemo.src.point.PointService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -51,7 +53,11 @@ public class OrderServiceImpl implements OrderService {
 	private final CeoService ceoServiceImpl;
 	private final TossPaymentConfig tosspaymentConfig;
 	private final SolApiConfig solApiConfig;
+
 	private final CeoServiceFacade ceoServiceFacade;
+
+	private final PointService pointService;
+
 
 	@Override
 	public OrderRegisterRes getOrders(Long id, Progress progress) {
@@ -74,12 +80,17 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Transactional
 	public OrderStatusRes completeOrder(Long id, OrderStatusUpdateReq request) {
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 		Order order = getOrder(request.getOrderId());
 		verifyPostOrder(ceoInfo, order);
 		verifyPostProgress(order, request);
 		order.completeOrder(request.getStatus());
+
+		// 포인트 적립
+		pointService.giveOrderPoint(order, request.getStatus());
+
 		orderRepository.save(order);
 
 		sendCompleteMessage(order, request.getStatus());
@@ -124,6 +135,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Transactional
 	public OrderStatusRes cancelOrder(Long id, OrderStatusUpdateReq request) {
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 		Order order = getOrder(request.getOrderId());
@@ -131,6 +143,7 @@ public class OrderServiceImpl implements OrderService {
 		verifyPostOrder(ceoInfo, order);
 		verifyPostProgress(order, request);
 		//order.cancelOrder(request.getStatus());
+		pointService.cancelOrderPoint(order);
 		orderRepository.save(order);
 
 		// 카카오 알림톡 전송
