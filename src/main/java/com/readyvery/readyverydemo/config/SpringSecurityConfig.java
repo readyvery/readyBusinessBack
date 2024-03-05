@@ -69,7 +69,7 @@ public class SpringSecurityConfig {
 				.requestMatchers("/v1/user/join",
 					"/v1/user/login",
 					"/v1/user/duplicate/check",
-					"/v1/user/find/**"
+					"/v1/ceo/find/**"
 				).anonymous() // 로그인되지 않은 사용자만 접근 가능
 				.requestMatchers(
 					"/v1/jwt-test",
