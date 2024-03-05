@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import com.readyvery.readyverydemo.config.SolApiConfig;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
-import com.readyvery.readyverydemo.src.ceo.CeoService;
-import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendReq;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendRes;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyReq;
@@ -24,8 +22,6 @@ public class SmsServiceImpl implements SmsService {
 	private final SolApiConfig solApiConfig;
 	private final MessageSendingService messageSendingService;
 	private final VerificationService verificationService;
-	private final CeoService ceoServiceImpl;
-	private final CeoServiceFacade ceoServiceFacade;
 
 	@Override
 	public SmsSendRes sendSms(SmsSendReq smsSendReq) {
@@ -57,8 +53,7 @@ public class SmsServiceImpl implements SmsService {
 	@Override
 	public SmsVerifyRes verifySms(SmsVerifyReq smsVerifyReq) {
 
-		if (StringUtils.isEmpty(smsVerifyReq.getPhoneNumber()) || ceoServiceFacade.isExistPhone(
-			smsVerifyReq.getPhoneNumber())) {
+		if (StringUtils.isEmpty(smsVerifyReq.getPhoneNumber())) {
 			throw new BusinessLogicException(ExceptionCode.INVALID_INPUT);
 		}
 
