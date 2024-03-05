@@ -171,7 +171,7 @@ public class CeoController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK")
 	})
-	@GetMapping("/ceo/find/email")
+	@PostMapping("/ceo/find/email")
 	public CeoFindEmailRes findCeoEmail(@RequestBody CeoFindEmailReq ceoFindEmailReq) {
 		return ceoServiceImpl.findCeoEmail(ceoFindEmailReq.getPhoneNumber());
 	}
@@ -183,7 +183,7 @@ public class CeoController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK")
 	})
-	@GetMapping("/ceo/find/password")
+	@PostMapping("/ceo/find/password")
 	public CeoFindPasswordRes findCeoPassword(@RequestBody CeoFindPasswordReq ceoFindPasswordReq) {
 		return ceoServiceImpl.findCeoPassword(ceoFindPasswordReq);
 	}
