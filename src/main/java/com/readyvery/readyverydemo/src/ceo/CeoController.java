@@ -13,6 +13,10 @@ import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoFindEmailReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoFindEmailRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
@@ -158,6 +162,30 @@ public class CeoController {
 	@GetMapping("/ceo/entry/reject")
 	public CeoMetaInfoRes entryReject(@AuthenticationPrincipal CustomUserDetails userDetails) {
 		return ceoServiceImpl.entryReject(userDetails.getId());
+	}
+
+	/**
+	 *  아이디 찾기
+	 */
+	@Operation(summary = " 아이디 찾기 ", description = "사장님의 아이디를 찾습니다.", tags = {"유저 정보"})
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK")
+	})
+	@GetMapping("/ceo/find/email")
+	public CeoFindEmailRes findCeoEmail(@RequestBody CeoFindEmailReq ceoFindEmailReq) {
+		return ceoServiceImpl.findCeoEmail(ceoFindEmailReq.getPhoneNumber());
+	}
+
+	/**
+	 *  패스워드 찾기
+	 */
+	@Operation(summary = " 패스워드 찾기 ", description = "사장님의 패스워드 찾습니다.", tags = {"유저 정보"})
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK")
+	})
+	@GetMapping("/ceo/find/password")
+	public CeoFindPasswordRes findCeoPassword(@RequestBody CeoFindPasswordReq ceoFindPasswordReq) {
+		return ceoServiceImpl.findCeoPassword(ceoFindPasswordReq);
 	}
 
 }

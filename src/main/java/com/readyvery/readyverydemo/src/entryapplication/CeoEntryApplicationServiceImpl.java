@@ -20,6 +20,7 @@ import com.readyvery.readyverydemo.domain.repository.CeoMetaRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
 import com.readyvery.readyverydemo.src.ceo.CeoService;
+import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
 import com.readyvery.readyverydemo.src.entryapplication.dto.CeoEntryApplicationReq;
 import com.readyvery.readyverydemo.src.entryapplication.dto.CeoEntryApplicationRes;
 
@@ -33,11 +34,12 @@ public class CeoEntryApplicationServiceImpl implements CeoEntryApplicationServic
 	private final S3Config s3Config;
 	private final CeoService ceoServiceImpl;
 	private final CeoMetaRepository ceoMetaRepository;
+	private final CeoServiceFacade ceoServiceFacade;
 
 	@Override
 	public CeoEntryApplicationRes entryApplication(Long userId, CeoEntryApplicationReq ceoEntryApplicationReq) {
 		// 1. 유저 정보 확인
-		CeoInfo ceoInfo = ceoServiceImpl.getCeoInfo(userId);
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(userId);
 		System.out.println("ceoInfo.getRole() = " + ceoInfo.getRole());
 		System.out.println("Role = " + Role.USER);
 		if (!ceoInfo.getRole().equals(Role.USER)) {
@@ -75,7 +77,7 @@ public class CeoEntryApplicationServiceImpl implements CeoEntryApplicationServic
 		ceoMetaInfoSave(ceoInfo, ceoEntryApplicationReq, fileNames);
 
 		// 4. 유저 권한 변경
-		ceoServiceImpl.changeRoleAndSave(ceoInfo.getId(), Role.READY);
+		ceoServiceFacade.changeRoleAndSave(ceoInfo.getId(), Role.READY);
 
 		return CeoEntryApplicationRes.builder()
 			.success(true)

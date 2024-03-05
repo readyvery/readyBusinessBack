@@ -1,6 +1,6 @@
 package com.readyvery.readyverydemo.security.jwt.service.sendmanger;
 
-import static com.readyvery.readyverydemo.security.jwt.config.JwtConfig.*;
+import static com.readyvery.readyverydemo.config.JwtConfig.*;
 
 import java.util.Optional;
 
@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.readyvery.readyverydemo.config.JwtConfig;
 import com.readyvery.readyverydemo.domain.Role;
-import com.readyvery.readyverydemo.security.jwt.config.JwtConfig;
 import com.readyvery.readyverydemo.security.jwt.service.create.JwtTokenGenerator;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,9 +39,9 @@ public class JwtTokenizer {
 			jwtConfig.getRefreshTokenExpirationPeriod().intValue(), true);
 	}
 
-	public void addAccessRefreshTokenResponseBody(HttpServletResponse response, String accessToken,
+	public void addAccessRefreshTokenResponseBody(String accessToken,
 		String refreshToken, Role role) {
-		tokenSendManager.addTokenResponseBody(response, accessToken, refreshToken, role);
+		tokenSendManager.addTokenResponseBody(accessToken, refreshToken, role);
 
 	}
 
