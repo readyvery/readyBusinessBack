@@ -43,4 +43,6 @@ public class SaleController {
 		return saleServiceImpl.getSaleManagementMoney(userDetails.getId(), request);
 	}
 
+
+
 }

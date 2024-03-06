@@ -1,7 +1,7 @@
 package com.readyvery.readyverydemo.security.jwt.service.sendmanger;
 
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import java.io.IOException;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,10 +32,12 @@ public class TokenSendManager {
 
 	}
 
-	public ResponseEntity<CeoLoginSuccessRes> addTokenResponseBody(String accessToken, String refreshToken, Role role) {
+	public void addTokenResponseBody(HttpServletResponse response, String accessToken,
+		String refreshToken, Role role) {
 
 		// JSON 응답 생성 및 전송
-
+		response.setContentType("application/json;charset=UTF-8");
+		response.setStatus(HttpServletResponse.SC_OK);
 		CeoLoginSuccessRes ceoLoginSuccessRes = CeoLoginSuccessRes.builder()
 			.success(true)
 			.message("로그인 성공")
@@ -44,9 +46,12 @@ public class TokenSendManager {
 			.role(role)
 			.build();
 
-		return ResponseEntity.ok()
-			.contentType(MediaType.APPLICATION_JSON)
-			.body(ceoLoginSuccessRes);
+		try {
+			String jsonResponse = objectMapper.writeValueAsString(ceoLoginSuccessRes);
+			response.getWriter().write(jsonResponse);
+		} catch (IOException e) {
+			log.error("응답 작성 중 에러 발생", e);
+		}
 	}
 
 }

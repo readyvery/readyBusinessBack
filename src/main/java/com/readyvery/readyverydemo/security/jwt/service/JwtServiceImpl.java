@@ -61,7 +61,7 @@ public class JwtServiceImpl implements JwtService {
 	public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken,
 		Role role) {
 
-		jwtTokenizer.addAccessRefreshTokenResponseBody(accessToken, refreshToken, role);
+		jwtTokenizer.addAccessRefreshTokenResponseBody(response, accessToken, refreshToken, role);
 		jwtTokenizer.addAccessTokenCookie(response, accessToken);
 		jwtTokenizer.addRefreshTokenCookie(response, refreshToken);
 		log.info("Access Token, Refresh Token 헤더 설정 완료");

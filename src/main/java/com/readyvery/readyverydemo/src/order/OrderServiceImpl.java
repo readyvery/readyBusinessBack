@@ -31,7 +31,6 @@ import com.readyvery.readyverydemo.domain.Progress;
 import com.readyvery.readyverydemo.domain.repository.OrderRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
-import com.readyvery.readyverydemo.src.ceo.CeoService;
 import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
 import com.readyvery.readyverydemo.src.order.dto.OrderMapper;
 import com.readyvery.readyverydemo.src.order.dto.OrderRegisterRes;
@@ -50,14 +49,10 @@ import lombok.extern.log4j.Log4j2;
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final OrderMapper orderMapper;
-	private final CeoService ceoServiceImpl;
 	private final TossPaymentConfig tosspaymentConfig;
 	private final SolApiConfig solApiConfig;
-
 	private final CeoServiceFacade ceoServiceFacade;
-
 	private final PointService pointService;
-
 
 	@Override
 	public OrderRegisterRes getOrders(Long id, Progress progress) {

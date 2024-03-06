@@ -32,4 +32,24 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 		@Param("startDate") LocalDateTime startDate,
 		@Param("endDate") LocalDateTime endDate);
 
+	@Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.store.id = :storeId AND o.createdAt BETWEEN :startOfMonth "
+		+ "AND :endOfMonth")
+	Optional<Long> sumTotalAmountByStoreIdForMonth(@Param("storeId") Long storeId,
+		@Param("startOfMonth") LocalDateTime startOfMonth, @Param("endOfMonth") LocalDateTime endOfMonth);
+
+	@Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.store.id = :storeId AND o.createdAt BETWEEN :startOfWeek "
+		+ "AND :endOfWeek")
+	Optional<Long> sumTotalAmountByStoreIdForWeek(@Param("storeId") Long storeId,
+		@Param("startOfWeek") LocalDateTime startOfWeek, @Param("endOfWeek") LocalDateTime endOfWeek);
+
+	@Query("SELECT COUNT(o) FROM Order o WHERE o.store.id = :storeId AND o.createdAt BETWEEN :startOfMonth "
+		+ "AND :endOfMonth")
+	Long countOrdersByStoreIdForMonth(@Param("storeId") Long storeId,
+		@Param("startOfMonth") LocalDateTime startOfMonth, @Param("endOfMonth") LocalDateTime endOfMonth);
+
+	@Query("SELECT COUNT(o) FROM Order o WHERE o.store.id = :storeId AND o.createdAt BETWEEN :startOfWeek "
+		+ "AND :endOfWeek")
+	Long countOrdersByStoreIdForWeek(@Param("storeId") Long storeId, @Param("startOfWeek") LocalDateTime startOfWeek,
+		@Param("endOfWeek") LocalDateTime endOfWeek);
+
 }
