@@ -8,5 +8,7 @@ import lombok.Getter;
 public class SaleManagementTotalOrderRes {
 	private String message;
 	private boolean success;
-	private Long totalOrder;
+	private Long totalWeekOrder;
+	private Long totalMonthOrder;
+
 }

@@ -18,8 +18,7 @@ public interface SaleService {
 
 	SaleManagementTotalMoneyRes getMonthlySalesAmount(Long id, SaleManagementTotalMoneyReq saleManagementTotalMoneyReq);
 
-	SaleManagementTotalOrderRes getWeekSaleManagementOrder(Long id,
+	SaleManagementTotalOrderRes getSaleManagementOrder(Long id,
 		SaleManagementTotalOrderReq saleManagementTotalOrderReq);
 
-	SaleManagementTotalOrderRes getMonthlySalesOrder(Long id, SaleManagementTotalOrderReq saleManagementTotalOrderReq);
 }

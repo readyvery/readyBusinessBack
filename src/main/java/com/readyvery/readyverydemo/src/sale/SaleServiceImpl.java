@@ -60,16 +60,17 @@ public class SaleServiceImpl implements SaleService {
 			.build();
 	}
 
+	// TODO: getWeekSaleManagementMoney, getMonthlySalesAmount 합치기
 	@Override
 	public SaleManagementTotalMoneyRes getWeekSaleManagementMoney(Long id,
 		SaleManagementTotalMoneyReq saleManagementTotalMoneyReq) {
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
 		Optional<Long> saleManagementTotal = sumTotalAmountByStoreIdForWeek(ceoInfo.getStore().getId(),
-			getStartOfMonth(convertToDateTime(saleManagementTotalMoneyReq.getMonday())),
-			getEndOfMonth(convertToDateTime(saleManagementTotalMoneyReq.getMonday())));
+			getStartOfWeek(convertToDateTime(saleManagementTotalMoneyReq.getMonday())),
+			getStartOfWeek(convertToDateTime(saleManagementTotalMoneyReq.getMonday())).plusDays(7));
 
 		return SaleManagementTotalMoneyRes.builder()
-			.message("해당 주차 매출관리 조회 성공")
+			.message("해당 주차 총 매출 조회 성공")
 			.success(true)
 			.totalMoney(saleManagementTotal)
 			.build();
@@ -84,39 +85,28 @@ public class SaleServiceImpl implements SaleService {
 			getEndOfMonth(convertToDateTime(saleManagementTotalMoneyReq.getMonday())));
 
 		return SaleManagementTotalMoneyRes.builder()
-			.message("해당 월 매출관리 조회 성공")
+			.message("해당 월 총 매출 조회 성공")
 			.success(true)
 			.totalMoney(saleManagementTotal)
 			.build();
 	}
 
 	@Override
-	public SaleManagementTotalOrderRes getWeekSaleManagementOrder(Long id,
+	public SaleManagementTotalOrderRes getSaleManagementOrder(Long id,
 		SaleManagementTotalOrderReq saleManagementTotalOrderReq) {
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
-		Long saleManagementTotal = countOrdersByStoreIdForWeek(ceoInfo.getStore().getId(),
+		Long saleManagementWeekTotal = countOrdersByStoreIdForWeek(ceoInfo.getStore().getId(),
+			getStartOfWeek(convertToDateTime(saleManagementTotalOrderReq.getMonday())),
+			getStartOfWeek(convertToDateTime(saleManagementTotalOrderReq.getMonday())).plusDays(7));
+		Long saleManagementMonthTotal = countOrdersByStoreIdForMonth(ceoInfo.getStore().getId(),
 			getStartOfMonth(convertToDateTime(saleManagementTotalOrderReq.getMonday())),
 			getEndOfMonth(convertToDateTime(saleManagementTotalOrderReq.getMonday())));
 
 		return SaleManagementTotalOrderRes.builder()
-			.message("해당 주차 매출관리 조회 성공")
+			.message("해당 주차, 월 총 주문 건수 조회 성공")
 			.success(true)
-			.totalOrder(saleManagementTotal)
-			.build();
-	}
-
-	@Override
-	public SaleManagementTotalOrderRes getMonthlySalesOrder(Long id,
-		SaleManagementTotalOrderReq saleManagementTotalOrderReq) {
-		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
-		Long saleManagementTotal = countOrdersByStoreIdForMonth(ceoInfo.getStore().getId(),
-			getStartOfMonth(convertToDateTime(saleManagementTotalOrderReq.getMonday())),
-			getEndOfMonth(convertToDateTime(saleManagementTotalOrderReq.getMonday())));
-
-		return SaleManagementTotalOrderRes.builder()
-			.message("해당 월 매출관리 조회 성공")
-			.success(true)
-			.totalOrder(saleManagementTotal)
+			.totalWeekOrder(saleManagementWeekTotal)
+			.totalMonthOrder(saleManagementMonthTotal)
 			.build();
 	}
 
@@ -130,12 +120,6 @@ public class SaleServiceImpl implements SaleService {
 		LocalDateTime startDateTime = day;
 		LocalDateTime endDateTime = day.plusDays(7);
 		return getSaleManagementMoneyData(id, startDateTime, endDateTime);
-	}
-
-	public List<SaleManagementDto> getSaleOrderManagement(Long id, LocalDateTime day) {
-		LocalDateTime startDateTime = day;
-		LocalDateTime endDateTime = day.plusDays(7);
-		return getSaleManagementOrderData(id, startDateTime, endDateTime);
 	}
 
 	public Optional<Long> sumTotalAmountByStoreIdForMonth(Long storeId, LocalDateTime startOfMonth,
@@ -159,24 +143,6 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	public List<SaleManagementDto> getSaleManagementMoneyData(Long storeId, LocalDateTime startDate,
-		LocalDateTime endDate) {
-		List<SaleManagementDto> queryResult = orderRepository.sumTotalAmountPerDayBetweenDates(storeId, startDate,
-			endDate);
-		List<SaleManagementDto> resultWithAllDays = initializeWeekData();
-
-		Map<String, SaleManagementDto> resultMap = queryResult.stream()
-			.collect(Collectors.toMap(SaleManagementDto::getDay, Function.identity()));
-
-		resultWithAllDays.forEach(dayDto -> {
-			if (resultMap.containsKey(dayDto.getDay())) {
-				dayDto.setSale(resultMap.get(dayDto.getDay()).getSale());
-			}
-		});
-
-		return resultWithAllDays;
-	}
-
-	public List<SaleManagementDto> getSaleManagementOrderData(Long storeId, LocalDateTime startDate,
 		LocalDateTime endDate) {
 		List<SaleManagementDto> queryResult = orderRepository.sumTotalAmountPerDayBetweenDates(storeId, startDate,
 			endDate);
