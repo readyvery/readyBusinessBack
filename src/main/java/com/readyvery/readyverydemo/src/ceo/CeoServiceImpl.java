@@ -78,7 +78,7 @@ public class CeoServiceImpl implements CeoService {
 		}
 		String ceoInfoEmail = ceoServiceFacade.findCeoEmailByPhone(phoneNumber);
 		return CeoFindEmailRes.builder()
-			.success(false)
+			.success(true)
 			.message("아이디 " + ceoInfoEmail)
 			.build();
 	}
