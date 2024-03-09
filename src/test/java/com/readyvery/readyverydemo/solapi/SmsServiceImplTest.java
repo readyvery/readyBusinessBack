@@ -50,7 +50,7 @@ public class SmsServiceImplTest {
 			true); // sendMessage의 결과를 모킹
 
 		// when
-		SmsSendRes response = smsService.sendSms(request);
+		SmsSendRes response = smsService.sendSms(request.getPhoneNumber());
 
 		// then
 		assertTrue(response.isSuccess());

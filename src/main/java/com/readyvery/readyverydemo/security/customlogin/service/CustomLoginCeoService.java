@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.readyvery.readyverydemo.domain.CeoInfo;
-import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,12 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomLoginCeoService implements UserDetailsService {
 
-	private final CeoRepository ceoRepository;
+	private final CeoServiceFacade ceoServiceFacade;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		CeoInfo ceoInfo = ceoRepository.findByEmail(email)
-			.orElseThrow(() -> new UsernameNotFoundException("해당 이메일이 존재하지 않습니다."));
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfoByEmail(email);
 
 		return User.builder()
 			.username(ceoInfo.getEmail())

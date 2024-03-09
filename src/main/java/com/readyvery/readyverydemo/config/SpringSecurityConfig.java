@@ -34,6 +34,7 @@ import com.readyvery.readyverydemo.security.jwt.service.JwtService;
 import com.readyvery.readyverydemo.security.oauth2.handler.OAuth2LoginFailureHandler;
 import com.readyvery.readyverydemo.security.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.readyvery.readyverydemo.security.oauth2.service.CustomOAuth2UserService;
+import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,6 +51,7 @@ public class SpringSecurityConfig {
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final CeoServiceFacade ceoServiceFacade;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -128,7 +130,7 @@ public class SpringSecurityConfig {
 
 	@Bean
 	public LoginSuccessHandler loginSuccessHandler() {
-		return new LoginSuccessHandler(jwtService, refreshTokenRepository, ceoRepository);
+		return new LoginSuccessHandler(jwtService, refreshTokenRepository, ceoServiceFacade);
 	}
 
 	@Bean

@@ -6,6 +6,7 @@ import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoExistEmailRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindEmailRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordRes;
@@ -38,4 +39,5 @@ public interface CeoService {
 
 	CeoFindPasswordRes findCeoPassword(CeoFindPasswordReq ceoFindPasswordReq);
 
+	CeoExistEmailRes findCeoPasswordExistEmail(String email);
 }

@@ -39,6 +39,12 @@ public class CeoServiceFacade {
 		);
 	}
 
+	public CeoInfo getCeoInfoByEmail(String email) {
+		return ceoRepository.findByEmail(email).orElseThrow(
+			() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
+		);
+	}
+
 	public void changeRoleAndSave(Long userId, Role role) {
 		CeoInfo ceoInfo = getCeoInfo(userId);
 		ceoInfo.changeRole(role);

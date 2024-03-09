@@ -13,6 +13,8 @@ import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoExistEmailReq;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoExistEmailRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindEmailReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindEmailRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordReq;
@@ -186,6 +188,18 @@ public class CeoController {
 	@PostMapping("/ceo/find/password")
 	public CeoFindPasswordRes findCeoPassword(@RequestBody CeoFindPasswordReq ceoFindPasswordReq) {
 		return ceoServiceImpl.findCeoPassword(ceoFindPasswordReq);
+	}
+
+	/**
+	 *  패스워드 찾기(이메일 존재 여부 파악)
+	 */
+	@Operation(summary = " 패스워드 찾기(이메일 존재 여부 파악) ", description = "사장님의 패스워드 찾습니다.", tags = {"유저 정보"})
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK")
+	})
+	@PostMapping("/ceo/find/password/email")
+	public CeoExistEmailRes findCeoPasswordExistEmail(@RequestBody CeoExistEmailReq ceoExistEmailReq) {
+		return ceoServiceImpl.findCeoPasswordExistEmail(ceoExistEmailReq.getEmail());
 	}
 
 }
