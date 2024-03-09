@@ -32,7 +32,6 @@ public class OrderMapper {
 			.phone(order.getUserInfo().getPhone())
 			.price(order.getAmount())
 			.method(order.getMethod())
-			.isCouponUsed(order.getCoupon() != null && order.getCoupon().isUsed())
 			.foodies(order.getCart()
 				.getCartItems()
 				.stream()

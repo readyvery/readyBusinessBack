@@ -238,7 +238,7 @@ public class OrderServiceImpl implements OrderService {
 		order.getReceipt().setCancels(tosspaymentDto.getCancels().toString());
 		order.getReceipt().setStatus(tosspaymentDto.getStatus());
 		if (order.getCoupon() != null) {
-			order.getCoupon().setUsed(false);
+			order.getCoupon().setUseCount(order.getCoupon().getUseCount() - 1);
 		}
 	}
 
