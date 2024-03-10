@@ -5,10 +5,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.readyvery.readyverydemo.domain.CeoInfo;
+import com.readyvery.readyverydemo.domain.repository.CeoRepository;
 import com.readyvery.readyverydemo.redis.dao.RefreshToken;
 import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
-import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +21,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
 	private final RefreshTokenRepository refreshTokenRepository;
-	private final CeoServiceFacade ceoServiceFacade;
+	private final CeoRepository ceoRepository;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -42,8 +42,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	private CeoInfo extractCeoInfo(Authentication authentication) {
 		UserDetails userDetails = (UserDetails)authentication.getPrincipal();
-		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfoByEmail(userDetails.getUsername());
-		return ceoInfo;
+		return ceoRepository.findByEmail(userDetails.getUsername()).orElseThrow();
 	}
 
 }
