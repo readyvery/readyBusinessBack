@@ -40,8 +40,7 @@ public class CeoEntryApplicationServiceImpl implements CeoEntryApplicationServic
 	public CeoEntryApplicationRes entryApplication(Long userId, CeoEntryApplicationReq ceoEntryApplicationReq) {
 		// 1. 유저 정보 확인
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(userId);
-		System.out.println("ceoInfo.getRole() = " + ceoInfo.getRole());
-		System.out.println("Role = " + Role.USER);
+
 		if (!ceoInfo.getRole().equals(Role.USER)) {
 			throw new BusinessLogicException(ExceptionCode.AUTH_ERROR);
 		}

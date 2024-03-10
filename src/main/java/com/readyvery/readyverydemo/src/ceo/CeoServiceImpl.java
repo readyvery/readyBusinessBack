@@ -24,6 +24,7 @@ import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoAuthRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoDuplicateCheckRes;
+import com.readyvery.readyverydemo.src.ceo.dto.CeoExistEmailRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindEmailRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordReq;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoFindPasswordRes;
@@ -103,6 +104,22 @@ public class CeoServiceImpl implements CeoService {
 				.build();
 		}
 
+	}
+
+	@Override
+	public CeoExistEmailRes findCeoPasswordExistEmail(String email) {
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfoByEmail(email);
+
+		return CeoExistEmailRes.builder()
+			.isSuccess(true)
+			.email(email)
+			.message(maskPhoneNumber(ceoInfo.getPhone()))
+			.build();
+
+	}
+
+	private String maskPhoneNumber(String phoneNumber) {
+		return phoneNumber.substring(0, 3) + "-****-**" + phoneNumber.substring(phoneNumber.length() - 2);
 	}
 
 	@Override
