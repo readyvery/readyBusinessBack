@@ -39,4 +39,31 @@ public class VerificationService {
 		String storedFlag = redisTemplate.opsForValue().get(phoneNumber + ":flag");
 		return Boolean.parseBoolean(storedFlag);
 	}
+
+	public boolean verifyNumberToChangePassword(String phoneNumber) {
+		String storedFlag = redisTemplate.opsForValue().get(phoneNumber + ":pwflag");
+		return Boolean.parseBoolean(storedFlag);
+	}
+
+	public String createVerificationCodeToChangePassword(String phoneNumber, boolean someBooleanValue) {
+		String code = UUID.randomUUID().toString().substring(0, 6);
+		redisTemplate.opsForValue().set(phoneNumber + ":pwcode", code, 5, TimeUnit.MINUTES);
+		redisTemplate.opsForValue().set(phoneNumber + ":pwflag", String.valueOf(someBooleanValue), 5, TimeUnit.MINUTES);
+		return code;
+	}
+
+	public boolean verifyCodeToChangePassword(String phoneNumber, String code) {
+		String storedCodeKey = phoneNumber + ":pwcode";
+		String flagKey = phoneNumber + ":pwflag";
+
+		String storedCode = redisTemplate.opsForValue().get(storedCodeKey);
+		if (storedCode != null && storedCode.equals(code)) {
+			// 인증 코드가 일치하면 플래그 값을 true로 설정
+			redisTemplate.opsForValue().set(flagKey, "true", 5, TimeUnit.MINUTES);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

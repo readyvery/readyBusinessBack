@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class SmsSendFindEmailReq {
 
 	private String email;
+	private String phoneNumber;
+	private String name;
 }

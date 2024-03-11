@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendFindEmailReq;
-import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendFindEmailRes;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendReq;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsSendRes;
 import com.readyvery.readyverydemo.src.smsauthentication.dto.SmsVerifyReq;
@@ -49,9 +48,19 @@ public class SmsController {
 		@ApiResponse(responseCode = "200", description = "OK"),
 	})
 	@PostMapping("/sms/send/find-email")
-	public SmsSendFindEmailRes sendFindPasswordSms(
+	public SmsSendRes sendFindPasswordSms(
 		@RequestBody SmsSendFindEmailReq smsSendFindEmailReq) {
 		return smsServiceImpl.sendFindPasswordSms(smsSendFindEmailReq);
+	}
+
+	@Operation(summary = "아이디로 SMS 인증 번호 인증 기능", description = "아이디로 SMS 인증 번호를 인증합니다.", tags = {"SMS 인증"})
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK"),
+	})
+	@PostMapping("/sms/verify/find-email")
+	public SmsVerifyRes verifySmsToFindPassword(
+		@RequestBody SmsVerifyReq smsVerifyReq) {
+		return smsServiceImpl.verifySmsToFindPassword(smsVerifyReq);
 	}
 
 }
