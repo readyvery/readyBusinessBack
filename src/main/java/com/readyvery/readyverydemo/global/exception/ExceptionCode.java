@@ -28,7 +28,8 @@ public enum ExceptionCode {
 	INVALID_INPUT(400, "Invalid input."),
 	AUTH_ERROR(401, "Auth Error"),
 	NOT_REJECT_ROLE(403, "Not reject role."),
-	BAD_REQUEST(400, "Bad request.");
+	BAD_REQUEST(400, "Bad request."),
+	NOT_EQUAL_PARAMETER(400, "Not equal parameter");
 
 	private int status;
 	private String message;

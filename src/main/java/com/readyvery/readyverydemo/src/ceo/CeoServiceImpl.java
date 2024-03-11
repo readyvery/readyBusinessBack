@@ -89,18 +89,19 @@ public class CeoServiceImpl implements CeoService {
 		if (!ceoFindPasswordReq.getPassword().equals(ceoFindPasswordReq.getConfirmPassword())
 			|| ceoFindPasswordReq.getPhoneNumber().isEmpty() || ceoFindPasswordReq.getPassword().isEmpty()) {
 			throw new BusinessLogicException(ExceptionCode.BAD_REQUEST);
-		} else if (!verificationService.verifyNumber(ceoFindPasswordReq.getPhoneNumber())) {
-			return CeoFindPasswordRes.builder()
-				.success(false)
-				.message("인증되지 않은 전화번호 입니다.")
-				.build();
-		} else {
+		} else if (verificationService.verifyNumberToChangePassword(ceoFindPasswordReq.getPhoneNumber())) {
 			CeoInfo ceoInfo = ceoServiceFacade.getCeoInfoByPhone(ceoFindPasswordReq.getPhoneNumber());
 			ceoServiceFacade.updatePassword(ceoInfo, ceoFindPasswordReq.getPassword());
 
 			return CeoFindPasswordRes.builder()
 				.success(true)
 				.message("비밀번호 변경이 완료되었습니다.")
+				.build();
+
+		} else {
+			return CeoFindPasswordRes.builder()
+				.success(false)
+				.message("인증되지 않은 전화번호 입니다.")
 				.build();
 		}
 
