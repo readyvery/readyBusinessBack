@@ -13,6 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.readyvery.readyverydemo.domain.CeoInfo;
 import com.readyvery.readyverydemo.domain.repository.CeoRepository;
+import com.readyvery.readyverydemo.redis.dao.RefreshToken;
+import com.readyvery.readyverydemo.redis.repository.RefreshTokenRepository;
 import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
 
@@ -31,6 +33,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final CeoRepository ceoRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -46,7 +49,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		// -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
 		// 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
 		// 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
-		String refreshToken = jwtService.extractRefreshTokenFromCookies(request)
+		String refreshToken = jwtService.extractRefreshToken(request)
 			.filter(jwtService::isTokenValid)
 			.orElse(null);
 
@@ -55,7 +58,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		// 일치한다면 AccessToken을 재발급해준다.
 		if (refreshToken != null) {
 			log.info("refreshToken이 존재합니다.");
-			checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+			checkRefreshTokenAndReIssueAccessToken(response, refreshToken);  // 이줄이 문제
 			return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
 		}
 
@@ -75,11 +78,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 *  그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
 	 */
 	public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-		ceoRepository.findByRefreshToken(refreshToken)
+
+		refreshTokenRepository.findByRefreshToken(refreshToken)
+			.map(RefreshToken::getId) // RefreshToken 객체에서 ID를 추출합니다.
+			.flatMap(ceoRepository::findByEmail) // 추출된 ID를 이용하여 CEO를 조회합니다.
 			.ifPresent(user -> {
 				String reIssuedRefreshToken = reIssueRefreshToken(user);
 				jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
-					reIssuedRefreshToken);
+					reIssuedRefreshToken, user.getRole());
 			});
 	}
 
@@ -88,10 +94,30 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 * jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후
 	 * DB에 재발급한 리프레시 토큰 업데이트 후 Flush
 	 */
+	// private String reIssueRefreshToken(CeoInfo ceoInfo) {
+	// 	String reIssuedRefreshToken = jwtService.createRefreshToken();
+	// 	ceoInfo.updateRefresh(reIssuedRefreshToken);
+	// 	ceoRepository.saveAndFlush(ceoInfo);
+	// 	return reIssuedRefreshToken;
+	// }
 	private String reIssueRefreshToken(CeoInfo ceoInfo) {
 		String reIssuedRefreshToken = jwtService.createRefreshToken();
-		ceoInfo.updateRefresh(reIssuedRefreshToken);
-		ceoRepository.saveAndFlush(ceoInfo);
+
+		RefreshToken refreshToken = refreshTokenRepository.findById(ceoInfo.getEmail())
+			.map(token -> {
+				// 이미 존재하는 토큰이 있으면, 새로 발급받은 리프레시 토큰으로 업데이트
+				token.update(reIssuedRefreshToken);
+				return token;
+			})
+			.orElseGet(() -> {
+				// 새로운 토큰 생성
+				return RefreshToken.builder()
+					.id(ceoInfo.getEmail())
+					.refreshToken(reIssuedRefreshToken)
+					.build();
+			});
+
+		refreshTokenRepository.save(refreshToken);
 		return reIssuedRefreshToken;
 	}
 
@@ -106,11 +132,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 
-		jwtService.extractAccessTokenFromCookies(request)
+		jwtService.extractAccessToken(request)
 			.filter(jwtService::isTokenValid)
 			.ifPresent(accessToken -> jwtService.extractEmail(accessToken)
 				.ifPresent(email -> ceoRepository.findByEmail(email)
-					.ifPresent(this::saveAuthentication)));
+					.ifPresent(user -> saveAuthentication(user, accessToken))));
 
 		filterChain.doFilter(request, response);
 	}
@@ -130,12 +156,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후,
 	 * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
 	 */
-	public void saveAuthentication(CeoInfo myUser) {
+	public void saveAuthentication(CeoInfo myUser, String accessToken) {
 
 		CustomUserDetails userDetailsUser = CustomUserDetails.builder()
 			.id(myUser.getId())
 			.email(myUser.getEmail())
 			.password("readyvery")
+			.role(myUser.getRole())
+			.accessToken(accessToken)
 			.authorities(Collections.singletonList(new SimpleGrantedAuthority(myUser.getRole().toString())))
 			.build();
 

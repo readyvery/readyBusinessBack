@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.readyvery.readyverydemo.domain.repository.UserRepository;
+import com.readyvery.readyverydemo.config.JwtConfig;
 import com.readyvery.readyverydemo.security.jwt.service.JwtService;
 import com.readyvery.readyverydemo.security.oauth2.CustomOAuth2User;
 
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
-	private final UserRepository userRepository;
+	private final JwtConfig jwtConfig;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -33,7 +33,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 			CustomOAuth2User oAuth2User = (CustomOAuth2User)authentication.getPrincipal();
 
 			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-			response.sendRedirect(jwtService.getFrontendUrl());
+			response.sendRedirect(jwtConfig.getFrontendUrl());
 		} catch (Exception e) {
 			throw e;
 		}
@@ -46,8 +46,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
 		String refreshToken = jwtService.createRefreshToken();
 
-		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-		jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken,
+			oAuth2User.getRole());  // TODO : role이 없음
+		//jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
 
 	}
 

@@ -3,14 +3,19 @@ package com.readyvery.readyverydemo.domain.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 
 import com.readyvery.readyverydemo.domain.SocialType;
 import com.readyvery.readyverydemo.domain.UserInfo;
 
+import jakarta.persistence.LockModeType;
+
 public interface UserRepository extends JpaRepository<UserInfo, Long> {
 	Optional<UserInfo> findByEmail(String email);
 
-	Optional<UserInfo> findByRefreshToken(String refreshToken);
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	Optional<UserInfo> findById(Long id);
+
 
 	/**
 	 * 소셜 타입과 소셜의 식별값으로 회원 찾는 메소드
