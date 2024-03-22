@@ -8,6 +8,57 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: test #임시
+      - name: Checkout source code.   # Repo checkout
+        uses: actions/checkout@v3
+
+      - name: Set application.properties from secrets
         run: |
-          echo "test"
+          echo "${{ secrets.MAIN_APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      - name: remove plain.jar
+        run: rm -rf build/libs/*plain.jar
+
+      # - name: file copy
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: libs
+      #     path: build/libs
+      - name: Upload to Cloudflare
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CF_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CF_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          BUCKET_NAME: ${{ secrets.CF_BUCKET_NAME }}
+          ENDPOINT_URL: ${{ secrets.CF_ENDPOINT_URL }}
+        run: |
+          aws s3 sync build/libs/ s3://$BUCKET_NAME/java/main/ceo \
+            --endpoint-url $ENDPOINT_URL --delete --exact-timestamps
+
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.MAIN_HOST }}
+          username: ${{ secrets.MAIN_USERNAME }}
+          key: ${{ secrets.MAIN_SSH_KEY }}
+          port: ${{ secrets.TEST_PORT }}
+
+          timeout: 40s  # 30초 기본
+          script: |
+            aws s3 sync s3://readyvery-dev-server/java/main/ceo ./docker/readyvery/jar \
+            --endpoint-url https://29c6e4b55b1ddb8d2b6e69df21141caa.r2.cloudflarestorage.com \
+            --delete --exact-timestamps
+
+            docker-compose build readyvery
+            docker-compose up -d readyvery
