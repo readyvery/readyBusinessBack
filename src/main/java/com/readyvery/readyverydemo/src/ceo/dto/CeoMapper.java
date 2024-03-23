@@ -9,6 +9,12 @@ import com.readyvery.readyverydemo.security.jwt.dto.CustomUserDetails;
 @Component
 public class CeoMapper {
 
+	public SimpleCeoInfoRes simpleCeoInfoToSimpleCeoInfoRes(String name) {
+		return SimpleCeoInfoRes.builder()
+			.name(name)
+			.build();
+	}
+
 	public CeoAuthRes ceoInfoToCeoAuthRes(CustomUserDetails userDetails) {
 		return CeoAuthRes.builder()
 			.id(userDetails.getId())
