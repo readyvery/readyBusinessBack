@@ -35,6 +35,7 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMapper;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
+import com.readyvery.readyverydemo.src.ceo.dto.SimpleCeoInfoRes;
 import com.readyvery.readyverydemo.src.smsauthentication.VerificationService;
 
 import jakarta.servlet.http.Cookie;
@@ -60,6 +61,12 @@ public class CeoServiceImpl implements CeoService {
 		verifyUserDetails(userDetails);
 		return ceoMapper.ceoInfoToCeoAuthRes(userDetails);
 
+	}
+
+	@Override
+	public SimpleCeoInfoRes getSimpleCeoInfoById(Long id) {
+		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
+		return ceoMapper.simpleCeoInfoToSimpleCeoInfoRes(ceoInfo.getNickName());
 	}
 
 	@Override

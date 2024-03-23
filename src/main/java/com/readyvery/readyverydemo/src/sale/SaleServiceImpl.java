@@ -50,6 +50,9 @@ public class SaleServiceImpl implements SaleService {
 	public SaleManagementRes getSaleManagementMoney(Long id, SaleManagementReq saleManagementReq) {
 
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
+		if (ceoInfo.getStore() == null) {
+			throw new BusinessLogicException(ExceptionCode.STORE_NOT_FOUND);
+		}
 		List<SaleManagementDto> saleManagementList = getSaleMoneyManagement(ceoInfo.getStore().getId(),
 			convertToDateTime(saleManagementReq.getMonday()));
 
@@ -65,6 +68,9 @@ public class SaleServiceImpl implements SaleService {
 	public SaleManagementTotalMoneyRes getWeekSaleManagementMoney(Long id,
 		SaleManagementTotalMoneyReq saleManagementTotalMoneyReq) {
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
+		if (ceoInfo.getStore() == null) {
+			throw new BusinessLogicException(ExceptionCode.STORE_NOT_FOUND);
+		}
 		Optional<Long> saleManagementTotal = sumTotalAmountByStoreIdForWeek(ceoInfo.getStore().getId(),
 			getStartOfWeek(convertToDateTime(saleManagementTotalMoneyReq.getMonday())),
 			getStartOfWeek(convertToDateTime(saleManagementTotalMoneyReq.getMonday())).plusDays(7));
@@ -80,6 +86,9 @@ public class SaleServiceImpl implements SaleService {
 	public SaleManagementTotalMoneyRes getMonthlySalesAmount(Long id,
 		SaleManagementTotalMoneyReq saleManagementTotalMoneyReq) {
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
+		if (ceoInfo.getStore() == null) {
+			throw new BusinessLogicException(ExceptionCode.STORE_NOT_FOUND);
+		}
 		Optional<Long> saleManagementTotal = sumTotalAmountByStoreIdForMonth(ceoInfo.getStore().getId(),
 			getStartOfMonth(convertToDateTime(saleManagementTotalMoneyReq.getMonday())),
 			getEndOfMonth(convertToDateTime(saleManagementTotalMoneyReq.getMonday())));
@@ -94,7 +103,11 @@ public class SaleServiceImpl implements SaleService {
 	@Override
 	public SaleManagementTotalOrderRes getSaleManagementOrder(Long id,
 		SaleManagementTotalOrderReq saleManagementTotalOrderReq) {
+
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
+		if (ceoInfo.getStore() == null) {
+			throw new BusinessLogicException(ExceptionCode.STORE_NOT_FOUND);
+		}
 		Long saleManagementWeekTotal = countOrdersByStoreIdForWeek(ceoInfo.getStore().getId(),
 			getStartOfWeek(convertToDateTime(saleManagementTotalOrderReq.getMonday())),
 			getStartOfWeek(convertToDateTime(saleManagementTotalOrderReq.getMonday())).plusDays(7));

@@ -25,6 +25,7 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
+import com.readyvery.readyverydemo.src.ceo.dto.SimpleCeoInfoRes;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,6 +57,18 @@ public class CeoController {
 	public CeoAuthRes userAuth(@AuthenticationPrincipal CustomUserDetails userDetails) {
 		// 서비스 계층을 호출하여 사용자 정보를 조회합니다.
 		return ceoServiceImpl.getCeoAuthByCustomUserDetails(userDetails);
+	}
+
+	/**
+	 * 사용자 이름 정보 조회
+	 */
+	@Operation(summary = "사용자 이름 조회", description = "사용자의 간단한 정보를 조회합니다.", tags = {"유저 정보"})
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK")
+	})
+	@GetMapping("/user/name")
+	public SimpleCeoInfoRes simpleUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+		return ceoServiceImpl.getSimpleCeoInfoById(userDetails.getId());
 	}
 
 	/**
