@@ -16,12 +16,15 @@ import com.readyvery.readyverydemo.src.ceo.dto.CeoJoinRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoLogoutRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoMetaInfoRes;
 import com.readyvery.readyverydemo.src.ceo.dto.CeoRemoveRes;
+import com.readyvery.readyverydemo.src.ceo.dto.SimpleCeoInfoRes;
 
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface CeoService {
 
 	CeoAuthRes getCeoAuthByCustomUserDetails(CustomUserDetails userDetails);
+
+	SimpleCeoInfoRes getSimpleCeoInfoById(Long id);
 
 	CeoInfoRes getCeoInfoById(Long id);
 
