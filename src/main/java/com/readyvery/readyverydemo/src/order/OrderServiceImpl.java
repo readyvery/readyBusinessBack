@@ -138,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
 		verifyPostOrder(ceoInfo, order);
 		verifyPostProgress(order, request);
 		//order.cancelOrder(request.getStatus());
-		// pointService.cancelOrderPoint(order);
+		pointService.cancelOrderPoint(order);
 		orderRepository.save(order);
 
 		// 카카오 알림톡 전송
