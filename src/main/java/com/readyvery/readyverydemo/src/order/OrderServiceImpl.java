@@ -204,6 +204,7 @@ public class OrderServiceImpl implements OrderService {
 		applyCancelTosspaymentDto(order, tosspaymentDto);
 
 	}
+
 	private TosspaymentDto makeZeroPaymentCancelDto(String rejectReason) {
 		return TosspaymentDto.builder()
 			.cancels(",=" + rejectReason)
