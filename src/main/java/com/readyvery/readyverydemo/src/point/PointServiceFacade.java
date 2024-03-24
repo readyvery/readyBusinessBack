@@ -22,6 +22,7 @@ public class PointServiceFacade {
 		point.setIsDeleted(true);
 		pointRepository.save(point);
 	}
+
 	public Point getPointByOrder(Order order) {
 		return pointRepository.findByOrder(order).orElseThrow(
 			() -> new RuntimeException("Point not found")

@@ -11,5 +11,6 @@ import com.readyvery.readyverydemo.domain.UserInfo;
 
 public interface PointRepository extends JpaRepository<Point, Long> {
 	List<Point> findAllByUserInfo(UserInfo userInfo);
+
 	Optional<Point> findByOrder(Order order);
 }
