@@ -102,7 +102,7 @@ public class CeoController {
 	/**
 	 * 사용자 로그아웃
 	 */
-	@Operation(summary = "카카오 유저 로그아웃 기능", description = "카카오 유저를 로그아웃합니다.", tags = {"OAuth2.0"})
+	@Operation(summary = "유저 로그아웃 기능", description = "유저를 로그아웃합니다.", tags = {"OAuth2.0"})
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK")
 	})
@@ -133,7 +133,7 @@ public class CeoController {
 	 * @return
 	 * @throws IOException
 	 */
-	@Operation(summary = "카카오 회원 탈퇴 기능", description = "주문 상태를 변경합니다.", tags = {"OAuth2.0"})
+	@Operation(summary = "카카오 회원 탈퇴 기능", description = "회원을 탈퇴합니다.", tags = {"OAuth2.0"})
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK"),
 	})
