@@ -194,11 +194,22 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public void cancelTossPayment(Order order, OrderStatusUpdateReq request) {
-
-		TosspaymentDto tosspaymentDto = requestTossPaymentCancel(order.getPaymentKey(), request.getRejectReason());
+		TosspaymentDto tosspaymentDto = null;
+		if (order.getAmount() > 0L) {
+			tosspaymentDto = requestTossPaymentCancel(order.getPaymentKey(), request.getRejectReason());
+		} else {
+			tosspaymentDto = makeZeroPaymentCancelDto(request.getRejectReason());
+		}
 
 		applyCancelTosspaymentDto(order, tosspaymentDto);
 
+	}
+
+	private TosspaymentDto makeZeroPaymentCancelDto(String rejectReason) {
+		return TosspaymentDto.builder()
+			.cancels(",=" + rejectReason)
+			.status("CANCELED")
+			.build();
 	}
 
 	private void verifyPostProgress(Order order, OrderStatusUpdateReq request) {
