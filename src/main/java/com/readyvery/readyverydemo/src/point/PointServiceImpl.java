@@ -20,7 +20,7 @@ public class PointServiceImpl implements PointService {
 	@Override
 	public void giveOrderPoint(Order order, Progress status) {
 		Long point = pointPolicy.calculatePoint(order.getAmount());
-		if (point <= 0){
+		if (point <= 0) {
 			return;
 		}
 		if (status.equals(Progress.COMPLETE)) {
@@ -40,7 +40,7 @@ public class PointServiceImpl implements PointService {
 	public void cancelOrderPoint(Order order) {
 		UserInfo userInfo = userServiceFacade.getUserInfo(order.getUserInfo().getId());
 		userInfo.addPoint(-order.getPoint());
-		if(pointPolicy.calculatePoint(order.getAmount()) > 0) {
+		if (pointPolicy.calculatePoint(order.getAmount()) > 0) {
 			pointServiceFacade.cancelPoints(order);
 		}
 		userServiceFacade.saveUser(userInfo);

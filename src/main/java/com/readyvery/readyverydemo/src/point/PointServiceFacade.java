@@ -29,7 +29,7 @@ public class PointServiceFacade {
 
 	public List<Point> getPointsByOrder(Order order) {
 		List<Point> points = pointRepository.findAllByOrder(order);
-		if (points.isEmpty()){
+		if (points.isEmpty()) {
 			throw new BusinessLogicException(ExceptionCode.POINT_NOT_FOUND);
 		}
 		return points;
