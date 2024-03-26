@@ -21,5 +21,6 @@ public class OrderDto {
 	private LocalDateTime time;
 	private String method;
 	private Long price;
+	private Long salePrice;
 	private boolean isCouponUsed;
 }
