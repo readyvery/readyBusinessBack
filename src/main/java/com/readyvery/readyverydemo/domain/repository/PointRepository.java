@@ -13,4 +13,6 @@ public interface PointRepository extends JpaRepository<Point, Long> {
 	List<Point> findAllByUserInfo(UserInfo userInfo);
 
 	Optional<Point> findByOrder(Order order);
+
+	List<Point> findAllByOrder(Order order);
 }

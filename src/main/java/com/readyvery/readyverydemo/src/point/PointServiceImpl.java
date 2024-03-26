@@ -36,7 +36,9 @@ public class PointServiceImpl implements PointService {
 	public void cancelOrderPoint(Order order) {
 		UserInfo userInfo = userServiceFacade.getUserInfo(order.getUserInfo().getId());
 		userInfo.addPoint(-order.getPoint());
-		pointServiceFacade.cancelPoint(order);
+		if(pointPolicy.calculatePoint(order.getAmount()) > 0) {
+			pointServiceFacade.cancelPoints(order);
+		}
 		userServiceFacade.saveUser(userInfo);
 	}
 }
