@@ -29,7 +29,8 @@ public enum ExceptionCode {
 	AUTH_ERROR(401, "Auth Error"),
 	NOT_REJECT_ROLE(403, "Not reject role."),
 	BAD_REQUEST(400, "Bad request."),
-	NOT_EQUAL_PARAMETER(400, "Not equal parameter");
+	NOT_EQUAL_PARAMETER(400, "Not equal parameter"),
+	POINT_NOT_FOUND(400, "Point not found.");
 
 	private int status;
 	private String message;
