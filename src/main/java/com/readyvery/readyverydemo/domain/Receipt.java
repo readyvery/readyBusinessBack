@@ -69,7 +69,7 @@ public class Receipt {
 	private Long taxExemptionAmount;
 
 	// @Column(columnDefinition = "json")
-	@Column
+	@Column(columnDefinition = "text")
 	private String cancels;
 
 	// @Column(columnDefinition = "json")

@@ -1,5 +1,7 @@
 package com.readyvery.readyverydemo.src.order;
 
+import static com.readyvery.readyverydemo.global.Constant.*;
+
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,8 +14,10 @@ import java.util.Objects;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import net.minidev.json.JSONObject;
@@ -32,6 +36,7 @@ import com.readyvery.readyverydemo.domain.repository.OrderRepository;
 import com.readyvery.readyverydemo.global.exception.BusinessLogicException;
 import com.readyvery.readyverydemo.global.exception.ExceptionCode;
 import com.readyvery.readyverydemo.src.ceo.CeoServiceFacade;
+import com.readyvery.readyverydemo.src.order.dto.FailDto;
 import com.readyvery.readyverydemo.src.order.dto.OrderMapper;
 import com.readyvery.readyverydemo.src.order.dto.OrderRegisterRes;
 import com.readyvery.readyverydemo.src.order.dto.OrderStatusRes;
@@ -264,6 +269,22 @@ public class OrderServiceImpl implements OrderService {
 			return restTemplate.postForObject(TossPaymentConfig.PAYMENT_URL + paymentKey + "/cancel",
 				new HttpEntity<>(params, headers),
 				TosspaymentDto.class);
+		}  catch (HttpClientErrorException e) {
+			/*
+			 * 취소 실패 시, 이미 취소된 거래라면 결제 정보 조회
+			 * 취소된 정보 재적용
+			 */
+			if (e.getResponseBodyAs(FailDto.class).getCode()
+				.equals(TOSS_RESPONSE_FAIL_CANCELED)) {
+				return restTemplate.exchange(
+						TossPaymentConfig.PAYMENT_URL + paymentKey,
+						HttpMethod.GET,
+						new HttpEntity<>(headers),
+						TosspaymentDto.class)
+					.getBody();
+			}
+			throw new BusinessLogicException(ExceptionCode.TOSS_PAYMENT_SUCCESS_FAIL);
+
 		} catch (Exception e) {
 			log.error("e.getMessage() = " + e.getMessage());
 			throw new BusinessLogicException(ExceptionCode.TOSS_PAYMENT_SUCCESS_FAIL);
