@@ -30,6 +30,7 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.readyvery.readyverydemo.config.SolApiConfig;
 import com.readyvery.readyverydemo.config.TossPaymentConfig;
 import com.readyvery.readyverydemo.domain.CeoInfo;
+import com.readyvery.readyverydemo.domain.Grade;
 import com.readyvery.readyverydemo.domain.Order;
 import com.readyvery.readyverydemo.domain.Progress;
 import com.readyvery.readyverydemo.domain.repository.OrderRepository;
@@ -89,7 +90,9 @@ public class OrderServiceImpl implements OrderService {
 		order.completeOrder(request.getStatus());
 
 		// 포인트 적립
-		pointService.giveOrderPoint(order, request.getStatus());
+		if (!order.getStore().getGrade().equals(Grade.EVENT)) {
+			pointService.giveOrderPoint(order, request.getStatus());
+		}
 
 		orderRepository.save(order);
 
