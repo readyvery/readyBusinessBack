@@ -64,7 +64,7 @@ public class JwtServiceImpl implements JwtService {
 		jwtTokenizer.addAccessRefreshTokenResponseBody(response, accessToken, refreshToken, role);
 		jwtTokenizer.addAccessTokenCookie(response, accessToken);
 		jwtTokenizer.addRefreshTokenCookie(response, refreshToken);
-		log.info("Access Token, Refresh Token 헤더 설정 완료");
+
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class JwtServiceImpl implements JwtService {
 			// 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
 			return jwtTokenizer.verifyAccessToken(accessToken);
 		} catch (Exception e) {
-			log.error("액세스 토큰이 유효하지 않습니다.");
+
 			return Optional.empty();
 		}
 	}

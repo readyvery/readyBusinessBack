@@ -8,6 +8,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class OrderRegisterRes {
-
+	private Long storeIdx;
 	private List<OrderDto> orders;
+
+	private List<OrderDto> integrationMakeOrders;
+
 }

@@ -25,10 +25,10 @@ public class MessageSendingService {
 			messageService.send(message);
 			return true;
 		} catch (NurigoMessageNotReceivedException exception) {
-			log.error(exception.getFailedMessageList().toString());
+
 			return false;
 		} catch (Exception exception) {
-			log.error(exception.getMessage());
+
 			return false;
 		}
 	}

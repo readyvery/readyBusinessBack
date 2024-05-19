@@ -32,7 +32,7 @@ public class OrderController {
 	})
 	@GetMapping("/order")
 	public OrderRegisterRes getOrder(@AuthenticationPrincipal CustomUserDetails userDetails,
-		@RequestParam(required = false) Progress status) {
+		@RequestParam Progress status) {
 		return orderServiceImpl.getOrders(userDetails.getId(), status);
 	}
 
