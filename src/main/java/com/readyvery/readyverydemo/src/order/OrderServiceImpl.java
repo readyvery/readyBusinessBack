@@ -65,12 +65,12 @@ public class OrderServiceImpl implements OrderService {
 		LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
 
 		if (progress == Progress.INTEGRATION) {
-			List<Order> WaitOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+			List<Order> waitOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
 				Progress.ORDER, ceoInfo.getStore().getId(), startOfDay, endOfDay);
-			List<Order> MakeOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+			List<Order> makeOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
 				Progress.MAKE, ceoInfo.getStore().getId(), startOfDay, endOfDay);
 
-			return orderMapper.orderToOrderRegisterRes(ceoInfo.getStore().getId(), WaitOrders, MakeOrders);
+			return orderMapper.orderToOrderRegisterRes(ceoInfo.getStore().getId(), waitOrders, makeOrders);
 		}
 
 		List<Order> orders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
