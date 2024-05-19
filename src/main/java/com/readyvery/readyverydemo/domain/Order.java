@@ -36,7 +36,7 @@ public class Order extends BaseTimeEntity {
 	@Column(name = "order_idx")
 	private Long id;
 
-	// 총 결제 가격
+	// 토스 결제 가격
 	@Column
 	private Long amount;
 
@@ -52,7 +52,7 @@ public class Order extends BaseTimeEntity {
 	@Column
 	private String orderName;
 
-	// 토스 결제 가격
+	// 총 결제 가격
 	@Column
 	private Long totalAmount;
 

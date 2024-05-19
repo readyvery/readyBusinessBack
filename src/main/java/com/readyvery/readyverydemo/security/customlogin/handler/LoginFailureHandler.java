@@ -38,7 +38,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 			log.error("응답 작성 중 에러 발생", e);
 
 		}
-		log.info("로그인에 실패했습니다. 메시지: {}", exception.getMessage());
+
 	}
 
 }

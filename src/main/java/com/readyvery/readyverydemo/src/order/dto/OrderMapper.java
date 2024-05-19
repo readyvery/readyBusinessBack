@@ -1,5 +1,6 @@
 package com.readyvery.readyverydemo.src.order.dto;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -11,13 +12,19 @@ import com.readyvery.readyverydemo.domain.Order;
 @Component
 public class OrderMapper {
 
-	public OrderRegisterRes orderToOrderRegisterRes(List<Order> order) {
-		if (order.isEmpty()) {
-			return OrderRegisterRes.builder()
-				.build();
-		}
+	public OrderRegisterRes orderToOrderRegisterRes(Long storeIdx, List<Order> order,
+		List<Order> integrationMakeOrder) {
+
+		List<OrderDto> integratedMakeOrderDtos = integrationMakeOrder.isEmpty() ? Collections.emptyList() :
+			integrationMakeOrder.stream().map(this::toOrderDto).toList();
+
+		List<OrderDto> orderDtos = order.isEmpty() ? Collections.emptyList() :
+			order.stream().map(this::toOrderDto).toList();
+
 		return OrderRegisterRes.builder()
-			.orders(order.stream().map(this::toOrderDto).toList())
+			.storeIdx(storeIdx)
+			.integrationMakeOrders(integratedMakeOrderDtos)
+			.orders(orderDtos)
 			.build();
 	}
 

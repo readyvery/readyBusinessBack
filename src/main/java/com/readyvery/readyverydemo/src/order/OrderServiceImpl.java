@@ -63,15 +63,19 @@ public class OrderServiceImpl implements OrderService {
 		}
 		LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
 		LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
+
+		if (progress == Progress.INTEGRATION) {
+			List<Order> WaitOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+				Progress.ORDER, ceoInfo.getStore().getId(), startOfDay, endOfDay);
+			List<Order> MakeOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+				Progress.MAKE, ceoInfo.getStore().getId(), startOfDay, endOfDay);
+
+			return orderMapper.orderToOrderRegisterRes(ceoInfo.getStore().getId(), WaitOrders, MakeOrders);
+		}
+
 		List<Order> orders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
 			progress, ceoInfo.getStore().getId(), startOfDay, endOfDay);
-
-		if (orders.isEmpty()) {
-			return OrderRegisterRes.builder()
-				.orders(Collections.emptyList())
-				.build();
-		}
-		return orderMapper.orderToOrderRegisterRes(orders);
+		return orderMapper.orderToOrderRegisterRes(ceoInfo.getStore().getId(), orders, Collections.emptyList());
 	}
 
 	@Override
@@ -202,20 +206,69 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	private void verifyPostProgress(Order order, OrderStatusUpdateReq request) {
-		if (order.getProgress() == Progress.ORDER && request.getStatus() == Progress.MAKE) { // 주문 -> 제조
-			if (request.getTime() == null) {
-				throw new BusinessLogicException(ExceptionCode.NOT_FOUND_TIME);
-			}
-			order.orderTime(request.getTime());
-		} else if (order.getProgress() == Progress.ORDER && request.getStatus() == Progress.CANCEL) {
-			if (request.getRejectReason() == null) {
-				throw new BusinessLogicException(ExceptionCode.NOT_FOUND_REJECT_REASON);
-			}
-			cancelTossPayment(order, request);
-		} else if (order.getProgress() == Progress.MAKE && request.getStatus() == Progress.COMPLETE) { // 제조 -> 완료
-		} else if (order.getProgress() == Progress.COMPLETE && request.getStatus() == Progress.PICKUP) { // 완료 -> 픽업
-		} else {
-			throw new BusinessLogicException(ExceptionCode.NOT_CHANGE_ORDER);
+
+		switch (order.getProgress()) {
+			case ORDER:
+				if (request.getStatus() == Progress.MAKE) {
+					checkEstimatedTime(request.getTime());
+					order.orderTime(request.getTime());
+					break;
+				} else if (request.getStatus() == Progress.CANCEL) {
+					checkRejectReason(request.getRejectReason());
+					cancelTossPayment(order, request);
+					break;
+				}
+			case MAKE:
+				if (request.getStatus() == Progress.COMPLETE) {
+					break;
+				}
+
+			case COMPLETE:
+				if (request.getStatus() == Progress.PICKUP) {
+					break;
+				}
+			default:
+				throw new BusinessLogicException(ExceptionCode.NOT_CHANGE_ORDER);
+		}
+
+		// if (order.getProgress() == Progress.ORDER && request.getStatus() == Progress.MAKE) { // 주문 -> 제조
+		// 	if (request.getTime() == null) {
+		// 		throw new BusinessLogicException(ExceptionCode.NOT_FOUND_TIME);
+		// 	}
+		// 	order.orderTime(request.getTime());
+		// } else if (order.getProgress() == Progress.ORDER && request.getStatus() == Progress.CANCEL) {
+		// 	if (request.getRejectReason() == null) {
+		// 		throw new BusinessLogicException(ExceptionCode.NOT_FOUND_REJECT_REASON);
+		// 	}
+		// 	cancelTossPayment(order, request);
+		// } else if (order.getProgress() == Progress.MAKE && request.getStatus() == Progress.COMPLETE) { // 제조 -> 완료
+		// } else if (order.getProgress() == Progress.COMPLETE && request.getStatus() == Progress.PICKUP) { // 완료 -> 픽업
+		// } else {
+		// 	throw new BusinessLogicException(ExceptionCode.NOT_CHANGE_ORDER);
+		// }
+	}
+
+	/**
+	 * 주문 취소시 estimatedTime이 정당한 값인지 확인
+	 *
+	 * @param estimatedTime
+	 * @throws BusinessLogicException
+	 */
+	private void checkEstimatedTime(Long estimatedTime) throws BusinessLogicException {
+		if (estimatedTime == null) {
+			throw new BusinessLogicException(ExceptionCode.NOT_FOUND_TIME);
+		}
+	}
+
+	/**
+	 * 주문 취소시 rejectReason이 정당한 값인지 확인
+	 *
+	 * @param rejectReason
+	 * @throws BusinessLogicException
+	 */
+	private void checkRejectReason(String rejectReason) throws BusinessLogicException {
+		if (rejectReason == null) {
+			throw new BusinessLogicException(ExceptionCode.NOT_FOUND_REJECT_REASON);
 		}
 	}
 
