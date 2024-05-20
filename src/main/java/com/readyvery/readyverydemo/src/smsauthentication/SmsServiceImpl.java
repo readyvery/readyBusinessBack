@@ -40,7 +40,7 @@ public class SmsServiceImpl implements SmsService {
 				.smsMessage("인증번호가 발송되었습니다.")
 				.build();
 		} else {
-			log.error("Message sending failed.");
+
 			return SmsSendRes.builder()
 				.isSuccess(false)
 				.smsMessage("메시지 발송에 실패하였습니다.")
