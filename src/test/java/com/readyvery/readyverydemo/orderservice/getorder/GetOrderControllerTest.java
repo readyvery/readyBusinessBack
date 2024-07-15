@@ -40,8 +40,9 @@ public class GetOrderControllerTest {
 	@MockBean
 	private OrderService orderServiceImpl; // OrderService를 MockBean으로 설정하여 목 객체로 사용
 
+	// JpaMetamodelMappingContext를 MockBean으로 설정하여 목 객체로 사용
 	@MockBean
-	private JpaMetamodelMappingContext jpaMetamodelMappingContext; // JpaMetamodelMappingContext를 MockBean으로 설정하여 목 객체로 사용
+	private JpaMetamodelMappingContext jpaMetamodelMappingContext;
 
 	@Autowired
 	private ObjectMapper objectMapper; // ObjectMapper 객체를 자동 주입하여 JSON 직렬화/역직렬화에 사용
@@ -71,7 +72,8 @@ public class GetOrderControllerTest {
 		Progress status = Progress.ORDER; // 테스트에서 사용할 Progress 상태 값
 
 		// 테스트에서 사용할 OrderRegisterRes 응답 객체를 생성
-		OrderRegisterRes orderResponse = new OrderRegisterRes(1L, Collections.emptyList(), Collections.emptyList());
+		OrderRegisterRes orderResponse =
+			new OrderRegisterRes(1L, Collections.emptyList(), Collections.emptyList());
 
 		// orderServiceImpl의 getOrders 메서드를 목킹하여 지정된 사용자 ID와 상태 값으로 호출 시 orderResponse를 반환하도록 설정
 		when(orderServiceImpl.getOrders(eq(userId), eq(status))).thenReturn(orderResponse);
@@ -81,6 +83,7 @@ public class GetOrderControllerTest {
 		mockMvc.perform(get("/v1/order")
 				.param("status", status.name())) // 상태 값을 쿼리 파라미터로 설정
 			.andExpect(status().isOk()) // HTTP 200 상태를 기대
-			.andExpect(content().json(objectMapper.writeValueAsString(orderResponse))); // 응답 내용이 orderResponse와 동일한지 검증
+			// 응답 내용이 orderResponse와 동일한지 검증
+			.andExpect(content().json(objectMapper.writeValueAsString(orderResponse)));
 	}
 }
