@@ -2,6 +2,9 @@ package com.readyvery.readyverydemo.domain;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -110,6 +113,16 @@ public class Order extends BaseTimeEntity {
 
 	@OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
 	private Receipt receipt;
+
+	@Builder.Default
+	@CreatedDate
+	@Column(name = "created_at")
+	private LocalDateTime createdAt = LocalDateTime.now();
+
+	@Builder.Default
+	@LastModifiedDate
+	@Column(name = "last_modified_at")
+	private LocalDateTime lastModifiedAt = LocalDateTime.now();
 
 	public void completeOrder(Progress progress) {
 		this.progress = progress;

@@ -10,6 +10,8 @@ public interface OrderService {
 
 	OrderRegisterRes getOrders(Long id, Progress progress);
 
+	OrderRegisterRes getOrdersV2(Long id, Progress progress);
+
 	OrderStatusRes completeOrder(Long id, OrderStatusUpdateReq request);
 
 	OrderStatusRes cancelOrder(Long id, OrderStatusUpdateReq request);

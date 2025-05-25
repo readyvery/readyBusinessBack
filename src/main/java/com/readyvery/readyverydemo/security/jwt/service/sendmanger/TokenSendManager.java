@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.readyvery.readyverydemo.config.JwtConfig;
 import com.readyvery.readyverydemo.domain.Role;
 import com.readyvery.readyverydemo.security.jwt.dto.CeoLoginSuccessRes;
 
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class TokenSendManager {
-	private final JwtConfig jwtConfig;
+
 	private final ObjectMapper objectMapper;
 
 	public void addTokenCookie(HttpServletResponse response, String name, String value, String path, int maxAge,

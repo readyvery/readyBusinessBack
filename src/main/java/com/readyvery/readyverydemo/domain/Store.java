@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "STORE")
 @AllArgsConstructor
 @Slf4j
+@Builder
 public class Store extends BaseTimeEntity {
 
 	@Id
@@ -101,4 +103,5 @@ public class Store extends BaseTimeEntity {
 	public void updateStatus(boolean status) {
 		this.status = status;
 	}
+
 }

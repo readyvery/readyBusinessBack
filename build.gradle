@@ -36,6 +36,7 @@ dependencies {
     // spring security & OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     // jwt
     implementation 'com.auth0:java-jwt:4.2.1'
@@ -57,6 +58,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+
+    //Kafka
+    implementation 'org.springframework.kafka:spring-kafka:3.0.7'
 
 //    //Querydsl 추가
 //    implementation 'com.querydsl:querydsl-core:5.0.0'

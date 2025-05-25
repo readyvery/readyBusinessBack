@@ -7,10 +7,8 @@ import java.util.Optional;
 import org.springframework.context.annotation.Configuration;
 
 import com.auth0.jwt.JWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.readyvery.readyverydemo.config.JwtConfig;
 import com.readyvery.readyverydemo.domain.Role;
-import com.readyvery.readyverydemo.security.jwt.service.create.JwtTokenGenerator;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -23,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtTokenizer {
 
-	private final JwtTokenGenerator tokenGenerator;
 	private final TokenSendManager tokenSendManager;
-	private final ObjectMapper objectMapper;
 	private final JwtConfig jwtConfig;
 
 	public void addAccessTokenCookie(HttpServletResponse response, String accessToken) {

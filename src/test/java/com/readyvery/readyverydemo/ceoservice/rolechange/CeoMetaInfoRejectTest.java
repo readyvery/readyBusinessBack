@@ -69,6 +69,7 @@ public class CeoMetaInfoRejectTest {
 			ceoService.entryReject(id);
 		});
 		assertEquals("Database error", exception.getMessage());
+		
 	}
 
 }
