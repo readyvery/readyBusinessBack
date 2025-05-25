@@ -1,4 +1,4 @@
-package com.readyvery.readyverydemo.orderservice.getorder;
+package com.readyvery.readyverydemo.orderservice.order;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;

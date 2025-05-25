@@ -85,6 +85,29 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	public OrderRegisterRes getOrdersV2(Long id, Progress progress) {
+
+		if (progress == null) {
+			throw new BusinessLogicException(ExceptionCode.NOT_PROGRESS_ORDER);
+		}
+		LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+		LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
+
+		if (progress == Progress.INTEGRATION) {
+			List<Order> waitOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+				Progress.ORDER, id, startOfDay, endOfDay);
+			List<Order> makeOrders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+				Progress.MAKE, id, startOfDay, endOfDay);
+
+			return orderMapper.orderToOrderRegisterRes(id, waitOrders, makeOrders);
+		}
+
+		List<Order> orders = orderRepository.findAllByProgressAndStoreIdAndCreatedAtBetween(
+			progress, id, startOfDay, endOfDay);
+		return orderMapper.orderToOrderRegisterRes(id, orders, Collections.emptyList());
+	}
+
+	@Override
 	@Transactional
 	public OrderStatusRes completeOrder(Long id, OrderStatusUpdateReq request) {
 		CeoInfo ceoInfo = ceoServiceFacade.getCeoInfo(id);
@@ -325,7 +348,7 @@ public class OrderServiceImpl implements OrderService {
 			return restTemplate.postForObject(TossPaymentConfig.PAYMENT_URL + paymentKey + "/cancel",
 				new HttpEntity<>(params, headers),
 				TosspaymentDto.class);
-		}  catch (HttpClientErrorException e) {
+		} catch (HttpClientErrorException e) {
 			/*
 			 * 취소 실패 시, 이미 취소된 거래라면 결제 정보 조회
 			 * 취소된 정보 재적용
